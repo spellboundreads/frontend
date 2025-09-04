@@ -1,7 +1,7 @@
 // TODO: fixed w and h?
 export default function BookCard({ title, author, imageUrl, reverse = true }) {
   return (
-    <div className={`flex flex-col h-60 w-24 gap-1`}>
+    <div className={`flex flex-col h-60 w-24 gap-1 justify-center `}>
       <div
         className={`w-24 ${
           reverse ? "rounded-b-full order-1" : "rounded-t-full order-2"
