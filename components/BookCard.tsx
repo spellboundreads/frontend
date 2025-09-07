@@ -1,5 +1,12 @@
 // TODO: fixed w and h?
-export default function BookCard({ title, author, imageUrl, reverse = true }) {
+export type BookCardProps = {
+  title: string;
+  author: string;
+  imageUrl: string;
+  reverse?: boolean;
+};
+
+export default function BookCard({ title, author, imageUrl, reverse = true }: BookCardProps) {
   return (
     <div className={`flex flex-col h-60 w-24 gap-1 justify-center `}>
       <div
