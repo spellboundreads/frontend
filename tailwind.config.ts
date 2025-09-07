@@ -14,6 +14,12 @@ const config: Config = {
         "hero-background": "var(--color-hero-background)",
       },
     },
+    fontFamily: {
+      sans: ["var(--font-geist-sans)", "sans-serif"],
+      mono: ["var(--font-geist-mono)", "monospace"],
+      serif: ["var(--font-source-serif-4)", "serif"],
+      mont: ["var(--font-montserrat)"],
+    },
   },
   plugins: [],
 };
