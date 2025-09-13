@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Input from "@/components/Input";
-import { sourceSerif4 } from "@/fonts";
 
 export default function LoginModal() {
   const [formData, setFormData] = useState({
