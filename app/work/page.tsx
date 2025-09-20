@@ -1,75 +1,69 @@
-import Chip from "@/components/Chip";
+import { work } from "@/data/work";
+import Header from "@/components/Header";
+import WorkCard from "@/components/work/WorkCard";
+import WorkOverview from "@/components/work/WorkOverview";
+import WorkGenres from "@/components/work/WorkGenres";
+import AuthorCard from "@/components/work/AuthorCard";
+import WorkDetailItem from "@/components/work/WorkDetailItem";
 
 export default function Page() {
   return (
-    <div>
-      {/* Work Details */}
-      <div className="bg-[#eae7da] flex gap-5 p-4">
+    <div className="text-black flex flex-col gap-10 bg-[#eae7da]">
+      <Header />
+      {/* Work Overview & Genres */}
+      <div className="bg-[#eae7da] flex gap-4 px-24">
         <div className="w-[20rem]">
-          <WorkCard />
+          <WorkCard coverImage={work.coverImage} title={work.title} />
         </div>
-        <div className="flex-1 flex flex-col p-8 gap-2 justify-between">
-          <WorkDetails />
-
-          <WorkGenres />
+        <div className="flex-1 flex flex-col p-4 gap-2">
+          <WorkOverview
+            title={work.title}
+            authorName={work.author.name}
+            publishedYear={work.publishedYear}
+            quote={work.quote}
+          />
+          <WorkGenres genres={work.genres} />
         </div>
       </div>
-    </div>
-  );
-}
 
-function WorkCard() {
-  return (
-    <div className="flex flex-col px-4 gap-5 items-center">
-      <div className="w-52 items-center flex justify-center">
-        <img
-          src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1650033243i/41733839.jpg"
-          alt=""
-          className="w-full shadow-lg shadow-amber-50"
-        />
-      </div>
-      <button className="rounded-4xl py-2 w-full font-semibold bg-white border-2 border-gray-500 active:bg-gray-200">
-        Add to Shelf
-      </button>
-    </div>
-  );
-}
+      {/* Work Details */}
 
-function WorkDetails() {
-  return (
-    <div className="flex flex-col gap-4 px-2">
-      <h1 className="text-5xl font-semibold">The Great Gatsby</h1>
-      <p className="text-xl">
-        by{" "}
-        <a href="#" className="underline">
-          F. Scott Fitzgerald
-        </a>
-      </p>
-      <p className="text-lg">
-        in{" "}
-        <a href="#" className="underline">
-          1925
-        </a>
-      </p>
-      <p>
-        <i>
-          “And so with the sunshine and the great bursts of leaves growing on
-          the trees, just as things grow in fast movies, I had that familiar
-          conviction that life was beginning over again with the summer.”
-        </i>
-      </p>
-    </div>
-  );
-}
+      <div className="bg-[#F8F5EA] flex lg:flex-row flex-col lg:gap-36 gap-8 px-24 py-8 ">
+        {/* Description and author */}
+        <div className="max-w-2xl flex flex-col gap-8">
+          <div className="flex flex-col gap-2">
+            <h2 className="font-bold text-xl">Description</h2>
+            <div className="text-sm">{work.description}</div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <h2 className="font-bold text-xl">About the Author</h2>
+            <div>
+              <AuthorCard
+                name={work.author.name}
+                img={work.author.img!}
+                biography={work.author.biography!}
+                workCount={work.author.bookCount!}
+                href={work.author.href!}
+              />
+            </div>
+          </div>
+        </div>
 
-function WorkGenres() {
-  return (
-    <div className="flex flex-col gap-2 px-2">
-      <h2 className="font-semibold">Genres</h2>
-      <div className="flex flex-wrap gap-1">
-        {work.genres.map((genre) => (
-          <Chip key={genre}>{genre}</Chip>
-        ))}
+        {/* Other details */}
+        <div className="flex flex-col gap-5">
+          <WorkDetailItem label="Language" value={work.language} />
+          <WorkDetailItem label="Page Count" value={`${work.pageCount} pages`} />
+          <WorkDetailItem label="Publisher" value={work.publisher} />
+          <WorkDetailItem label="ISBN" value={work.isbn} />
+          <WorkDetailItem
+            label="Average Rating"
+            value={`${work.rating} (${work.ratingsCount} ratings)`}
+          />
+          <WorkDetailItem
+            label="Published Year"
+            value={work.publishedYear.toString()}
+          />
+        </div>
       </div>
     </div>
   );
