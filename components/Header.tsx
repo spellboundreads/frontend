@@ -1,15 +1,21 @@
+"use client";
+
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function Header() {
   return (
-    <div className="shadow-sm bg-white flex justify-between items-center py-4 px-8 border-b border-gray-300 sticky top-0 z-50">
+    <div className=" text-gray-700 shadow-sm bg-white flex justify-between items-center py-4 px-8 border-b border-gray-300 sticky top-0 z-50">
       <SearchBar />
-      <UserInformation />
+      <UserInformation user={user} />
     </div>
   );
 }
 
-function UserInformation() {
+function UserInformation({
+  user,
+}: {
+  user: { username: string; pfp: string };
+}) {
   return (
     <div className="flex items-center gap-3">
       <img
@@ -17,7 +23,9 @@ function UserInformation() {
         alt="User Avatar"
         className="w-10 h-10 rounded-full object-cover"
       />
-      <span className="max-w-42 truncate block">{user.username}</span>
+      <div className="max-w-42 truncate block font-semibold">
+        {user.username}
+      </div>
     </div>
   );
 }
@@ -29,9 +37,8 @@ function SearchBar() {
       <input
         type="text"
         placeholder="Search books, authors, genres..."
-        className="flex-1 outline-none border-none ml-2"
+        className="flex-1 outline-none border-none ml-2 text-gray-700 "
       />
     </div>
   );
 }
-
