@@ -11,7 +11,7 @@ export default function Page() {
     <div className="text-black flex flex-col gap-10 bg-[#eae7da]">
       <Header />
       {/* Work Overview & Genres */}
-      <div className="bg-[#eae7da] flex gap-4 px-24">
+      <div className="bg-[#eae7da] flex gap-4 lg:px-24 px-12">
         <div className="w-[20rem]">
           <WorkCard coverImage={work.coverImage} title={work.title} />
         </div>
