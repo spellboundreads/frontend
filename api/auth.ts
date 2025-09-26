@@ -13,7 +13,9 @@ interface LoginDto {
 }
 
 interface AuthResponse {
-  token: string;
+  data: {
+    accessToken: string;
+  };
 }
 
 export const register = async (data: RegisterDto): Promise<AuthResponse> => {
