@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import Input from "@/components/Input";
+import { useAuth } from "@/context/AuthContext";
 
-export default function LoginModal() {
+export default function LoginForm() {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -16,9 +18,20 @@ export default function LoginModal() {
     }));
   }
 
-  function handleSubmit() {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
-    console.log(`Form submitted: ${formData.email}, ${formData.password}s`);
+    console.log(`Form submitted: ${formData.email}, ${formData.password}`);
+
+    try {
+      const data = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log("Login successful:", data);
+      alert("Login successful");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   }
 
   return (
