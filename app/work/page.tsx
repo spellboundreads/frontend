@@ -1,3 +1,4 @@
+"use client";
 import { work } from "@/data/work";
 import Header from "@/components/Header";
 import WorkCard from "@/components/work/WorkCard";
@@ -5,24 +6,56 @@ import WorkOverview from "@/components/work/WorkOverview";
 import WorkGenres from "@/components/work/WorkGenres";
 import AuthorCard from "@/components/work/AuthorCard";
 import WorkDetailItem from "@/components/work/WorkDetailItem";
+import { useState, useEffect } from "react";
+import { Work } from "@/api/work";
+import { getWork, getImage } from "@/api/work";
 
 export default function Page() {
+  const [work, setWork] = useState(null);
+
+  useEffect(() => {
+    const fetchWork = async () => {
+      try {
+        const workDetails = await getWork(
+          "e2bb6430-039d-4e43-8c36-6f72a5114996"
+        );
+        setWork(workDetails.data);
+        console.log(workDetails);
+      } catch (error) {
+        console.error("Error fetching work details:", error);
+      }
+    };
+
+    fetchWork();
+  }, []);
+
+  if (!work) {
+    return (
+      <div className="text-black flex flex-col gap-10 bg-[#eae7da]">
+        <Header />
+        <div className="flex justify-center items-center h-96">
+          <span>Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="text-black flex flex-col gap-10 bg-[#eae7da]">
       <Header />
       {/* Work Overview & Genres */}
       <div className="bg-[#eae7da] flex gap-4 lg:px-24 px-12">
         <div className="w-[20rem]">
-          <WorkCard coverImage={work.coverImage} title={work.title} />
+          <WorkCard coverImage={getImage(work.covers[0])} title={work.title} />
         </div>
         <div className="flex-1 flex flex-col p-4 gap-2">
           <WorkOverview
             title={work.title}
-            authorName={work.author.name}
-            publishedYear={work.publishedYear}
-            quote={work.quote}
+            authorName={work.works_authors[0].authors.name}
+            publishedYear={work.first_publish_date}
+            quote={work.excerpts[0]}
           />
-          <WorkGenres genres={work.genres} />
+          <WorkGenres genres={work.subjects} />
         </div>
       </div>
 
@@ -39,11 +72,11 @@ export default function Page() {
             <h2 className="font-bold text-xl">About the Author</h2>
             <div>
               <AuthorCard
-                name={work.author.name}
-                img={work.author.img!}
-                biography={work.author.biography!}
-                workCount={work.author.bookCount!}
-                href={work.author.href!}
+                name={work.works_authors[0].authors.name}
+                img={getImage(work.works_authors[0].authors.photos[0])}
+                biography={work.works_authors[0].authors.bio}
+                workCount={200}
+                href={"#"}
               />
             </div>
           </div>
@@ -51,18 +84,21 @@ export default function Page() {
 
         {/* Other details */}
         <div className="flex flex-col gap-5">
-          <WorkDetailItem label="Language" value={work.language} />
-          <WorkDetailItem label="Page Count" value={`${work.pageCount} pages`} />
-          <WorkDetailItem label="Publisher" value={work.publisher} />
-          <WorkDetailItem label="ISBN" value={work.isbn} />
+          {/* <WorkDetailItem label="Language" value={work.language} />
           <WorkDetailItem
+            label="Page Count"
+            value={`${work.pageCount} pages`}
+          /> */}
+          {/* <WorkDetailItem label="Publisher" value={work.publisher} />
+          <WorkDetailItem label="ISBN" value={work.isbn} /> */}
+          {/* <WorkDetailItem
             label="Average Rating"
             value={`${work.rating} (${work.ratingsCount} ratings)`}
-          />
-          <WorkDetailItem
+          /> */}
+          {/* <WorkDetailItem
             label="Published Year"
-            value={work.publishedYear.toString()}
-          />
+            value={work.first_publish_date.toString()}
+          /> */}
         </div>
       </div>
     </div>
