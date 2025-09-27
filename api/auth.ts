@@ -14,7 +14,7 @@ interface LoginDto {
 
 interface AuthResponse {
   data: {
-    accessToken: string;
+    access_token: string;
   };
 }
 
@@ -25,5 +25,10 @@ export const register = async (data: RegisterDto): Promise<AuthResponse> => {
 
 export const login = async (data: LoginDto): Promise<AuthResponse> => {
   const response = await apiClient.post<AuthResponse>("/auth/login", data);
+  return response.data;
+};
+
+export const getMe = async (): Promise<any> => {
+  const response = await apiClient.get<any>("/users/me");
   return response.data;
 };
