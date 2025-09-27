@@ -1,12 +1,15 @@
-"use client";
-
+// "use client";
+import { useAuth } from "@/context/AuthContext";
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function Header() {
+  const { user, logout } = useAuth();
+  console.log("Header user:", user);  
+
   return (
-    <div className=" text-gray-700 shadow-sm bg-white flex justify-between items-center py-4 px-8 border-b border-gray-300 sticky top-0 z-50">
+    <div className="text-gray-700 shadow-sm bg-white flex justify-between items-center py-4 px-8 border-b border-gray-300 sticky top-0 z-50">
       <SearchBar />
-      <UserInformation user={user} />
+      {user ? <UserInformation user={user} /> : <div>Hi</div>}
     </div>
   );
 }
@@ -14,12 +17,14 @@ export default function Header() {
 function UserInformation({
   user,
 }: {
-  user: { username: string; pfp: string };
+  user: { username: string; avatar_url?: string } | null;
 }) {
+  if (!user) return null; // or render a placeholder
+
   return (
     <div className="flex items-center gap-3">
       <img
-        src={user.pfp}
+        src={user.avatar_url || "/globe.svg"} // fallback in public folder
         alt="User Avatar"
         className="w-10 h-10 rounded-full object-cover"
       />

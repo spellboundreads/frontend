@@ -6,11 +6,16 @@ export type BookCardProps = {
   reverse?: boolean;
 };
 
-export default function BookCard({ title, author, imageUrl, reverse = true }: BookCardProps) {
+export default function BookCard({
+  title,
+  author,
+  imageUrl,
+  reverse = true,
+}: BookCardProps) {
   return (
-    <div className={`flex flex-col h-60 w-24 gap-1 justify-center `}>
+    <div className={`flex flex-col w-40 gap-1 justify-center overflow-visible`}>
       <div
-        className={`w-24 ${
+        className={`w-full ${
           reverse ? "rounded-b-full order-1" : "rounded-t-full order-2"
         }  overflow-x-hidden overflow-y-visible`}
       >
@@ -21,8 +26,8 @@ export default function BookCard({ title, author, imageUrl, reverse = true }: Bo
           reverse ? "order-2" : "order-1"
         } text-[0.5rem] flex flex-col items-center`}
       >
-        <p className="font-semibold">{title}</p>
-        <p>{author}</p>
+        <p className="font-semibold text-black text-sm text-center">{title}</p>
+        <p className="text-xs text-gray-700">{author}</p>
       </div>
     </div>
   );
