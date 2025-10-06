@@ -27,7 +27,7 @@ export default function BookCard({
         } text-[0.5rem] flex flex-col items-center`}
       >
         <p className="font-semibold text-black text-sm text-center">{title}</p>
-        <p className="text-xs text-gray-700">{author}</p>
+        <p className="text-xs text-center text-gray-700">{author}</p>
       </div>
     </div>
   );
