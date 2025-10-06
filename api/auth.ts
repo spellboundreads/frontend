@@ -13,6 +13,7 @@ interface LoginDto {
 }
 
 interface AuthResponse {
+  status: string;
   data: {
     access_token: string;
   };
