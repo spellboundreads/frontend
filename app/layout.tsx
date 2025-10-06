@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { geistSans, geistMono, sourceSerif4, montserrat } from "@/fonts";
 import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Spellbound",
@@ -17,7 +18,10 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${geistMono.variable} ${sourceSerif4.variable} ${montserrat.variable} antialiased`}
       >
+            <AuthProvider>
+        
         {children}
+        </AuthProvider>
       </body>
     </html>
   );
