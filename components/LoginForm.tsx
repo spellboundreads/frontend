@@ -3,7 +3,7 @@ import { useState } from "react";
 import Input from "@/components/Input";
 import { useAuth } from "@/context/AuthContext";
 
-export default function LoginForm() {
+export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -20,14 +20,12 @@ export default function LoginForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
-    console.log(`Form submitted: ${formData.email}, ${formData.password}`);
-
     try {
       const data = await login({
         email: formData.email,
         password: formData.password,
       });
-      console.log("Login successful:", data);
+      onSubmit?.();
       alert("Login successful");
     } catch (error) {
       console.error("Login failed:", error);

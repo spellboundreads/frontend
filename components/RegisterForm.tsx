@@ -3,13 +3,12 @@ import { useState } from "react";
 import Input from "@/components/Input";
 import { register } from "@/api/auth";
 
-export default function LoginModal() {
+export default function LoginModal({ onSubmit }: { onSubmit?: () => void }) {
   const [formData, setFormData] = useState({
     email: "",
-    display_name: "",
     username: "",
     password: "",
-    confirmPassword: "",
+    display_name: "",
   });
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -22,26 +21,26 @@ export default function LoginModal() {
 
   async function handleSubmit() {
     event?.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-    }
     try {
-      const { confirmPassword, ...userData } = formData;
+      const response = await register(formData);
+      localStorage.setItem("access", response.data.access_token);
 
-      const data = await register(userData);
-      localStorage.setItem("token", data.token);
-      alert(data);
+      if (response.status == 'success') {
+        alert("Registration successful!");
+      }
+      onSubmit?.();
     } catch (error) {
       console.error("Registration failed:", error);
+      console.error("Form data:", formData);  
       alert("Registration failed. Please try again.");
     }
   }
 
   return (
-    <div className="bg-white text-black flex flex-col gap-4 p-16 border items-center">
+    <div className="bg-white text-black flex flex-col gap-4 py-8 px-20 border items-center rounded-lg shadow-lg">
       <div className="flex flex-col gap-2 items-center">
         <h1 className={`text-3xl font-serif`}>Create an Account</h1>
-        <p>Discover your next favorite books.</p>
+        <p className="text-sm">Discover your next favorite books.</p>
       </div>
 
       <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
@@ -64,15 +63,6 @@ export default function LoginModal() {
           onChange={handleChange}
         />
         <Input
-          label="Display name"
-          type="text"
-          id="display_name"
-          name="display_name"
-          required
-          value={formData.display_name}
-          onChange={handleChange}
-        />
-        <Input
           label="password"
           type="password"
           id="password"
@@ -81,21 +71,12 @@ export default function LoginModal() {
           value={formData.password}
           onChange={handleChange}
         />
-        <Input
-          label="confirm password"
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          required
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
 
         <button
           type="submit"
           className="rounded-3xl border p-2 bg-black text-white w-full"
         >
-          Login
+          Create an account
         </button>
       </form>
 
