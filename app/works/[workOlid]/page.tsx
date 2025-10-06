@@ -2,11 +2,10 @@
 import Header from "@/components/Header";
 import WorkCard from "@/components/work/WorkCard";
 import WorkOverview from "@/components/work/WorkOverview";
-import WorkGenres from "@/components/work/WorkGenres";
+import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
 import WorkDetailItem from "@/components/work/WorkDetailItem";
 import { useState, useEffect } from "react";
-import { Work } from "@/api/work";
 import { getWork, getImage } from "@/api/work";
 import { useParams } from "next/navigation";
 
@@ -52,7 +51,7 @@ export default function Page() {
             publishedYear={new Date(work.first_publish_date).getUTCFullYear()}
             quote={work.excerpts[0]}
           />
-          <WorkGenres subjects={work.subjects} />
+          <WorkSubjects subjects={work.subjects} />
         </div>
       </div>
 
