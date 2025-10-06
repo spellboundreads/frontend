@@ -23,7 +23,7 @@ export default function WorkSubjects({ subjects }: WorkSubjects) {
         )}
         {subjects.length > defaultLength && !fullDisplay && (
           <button
-            className=" ml-4 uppercase font-semibold text-gray-800 shadow-2xl"
+            className=" ml-3 uppercase font-semibold underline underline-offset-3 text-gray-800 shadow-2xl"
             onClick={() => setFullDisplay(true)}
           >
             See more
