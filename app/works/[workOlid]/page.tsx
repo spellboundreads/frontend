@@ -8,11 +8,11 @@ import WorkDetailItem from "@/components/work/WorkDetailItem";
 import { useState, useEffect } from "react";
 import { Work } from "@/api/work";
 import { getWork, getImage } from "@/api/work";
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 
 export default function Page() {
   const [work, setWork] = useState(null);
-  const {workOlid} = useParams();
+  const { workOlid } = useParams();
 
   useEffect(() => {
     const fetchWork = async () => {
@@ -39,8 +39,7 @@ export default function Page() {
   }
 
   return (
-    <div className="text-black flex flex-col gap-10 bg-[#eae7da]">
-      <Header />
+    <div className="text-black flex flex-col gap-10 pt-4 bg-[#eae7da]">
       {/* Work Overview & Genres */}
       <div className="bg-[#eae7da] flex gap-4 lg:px-24 px-12">
         <div className="w-[20rem]">
@@ -53,7 +52,7 @@ export default function Page() {
             publishedYear={new Date(work.first_publish_date).getUTCFullYear()}
             quote={work.excerpts[0]}
           />
-          <WorkGenres genres={work.subjects} />
+          <WorkGenres subjects={work.subjects} />
         </div>
       </div>
 
