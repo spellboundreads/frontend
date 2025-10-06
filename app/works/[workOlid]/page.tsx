@@ -1,5 +1,4 @@
 "use client";
-import { work } from "@/data/work";
 import Header from "@/components/Header";
 import WorkCard from "@/components/work/WorkCard";
 import WorkOverview from "@/components/work/WorkOverview";
@@ -9,18 +8,17 @@ import WorkDetailItem from "@/components/work/WorkDetailItem";
 import { useState, useEffect } from "react";
 import { Work } from "@/api/work";
 import { getWork, getImage } from "@/api/work";
+import { useParams } from 'next/navigation';
 
 export default function Page() {
   const [work, setWork] = useState(null);
+  const {workOlid} = useParams();
 
   useEffect(() => {
     const fetchWork = async () => {
       try {
-        const workDetails = await getWork(
-          "e2bb6430-039d-4e43-8c36-6f72a5114996"
-        );
+        const workDetails = await getWork(workOlid);
         setWork(workDetails.data);
-        console.log(workDetails);
       } catch (error) {
         console.error("Error fetching work details:", error);
       }
@@ -52,7 +50,7 @@ export default function Page() {
           <WorkOverview
             title={work.title}
             authorName={work.works_authors[0].authors.name}
-            publishedYear={work.first_publish_date}
+            publishedYear={new Date(work.first_publish_date).getUTCFullYear()}
             quote={work.excerpts[0]}
           />
           <WorkGenres genres={work.subjects} />
