@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/Header";
 export const metadata: Metadata = {
-  title: "Spellbound",
+  title: "spellbound",
   description: "A platform for discovering and sharing literary works.",
 };
 
