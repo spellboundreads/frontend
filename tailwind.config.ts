@@ -21,7 +21,7 @@ const config: Config = {
       mont: ["var(--font-montserrat)"],
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/line-clamp")],
 };
 
 export default config;
