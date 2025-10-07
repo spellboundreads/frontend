@@ -22,11 +22,23 @@ export interface Work {
   };
 }
 
+interface SearchWorkQuery {
+  title?: string;
+  language?: string;
+  limit?: number;
+  page?: number;
+}
+
+export const findWorks = async (query: string): Promise<Work[]> => {
+  const response = await apiClient.get<Work[]>(`/works?${query}`);
+  return response.data;
+};
+
 export const getWork = async (id: string): Promise<Work> => {
   const response = await apiClient.get<Work>(`/works/${id}`);
   return response.data;
 };
 
 export const getImage = (path: string) => {
-    return `https://covers.openlibrary.org/b/id/${path}-L.jpg`
-}
+  return `https://covers.openlibrary.org/b/id/${path}-L.jpg`;
+};
