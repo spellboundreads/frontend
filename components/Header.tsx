@@ -1,4 +1,3 @@
-// components/HeaderClient.tsx
 "use client";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -13,30 +12,53 @@ export default function Header() {
 
   return (
     <header className="px-2 text-gray-700 shadow-sm h-20 bg-white flex justify-end gap-4 items-center border-b border-gray-300 sticky top-0 z-50">
-      {user ? <UserInformation user={user} /> : <div>Hi</div>}
-
-      {!user && (
+      {!isLoginOpen ? (
         <>
-          <button
-            className="rounded-md uppercase font-semibold"
-            onClick={() => setLoginOpen(true)}
-          >
-            Sign in
-          </button>
-          <button
-            className="rounded-md uppercase font-semibold"
-            onClick={() => setRegisterOpen(true)}
-          >
-            Create Account
-          </button>
+          {user && <UserInformation user={user} />}
+
+          {!user && (
+            <>
+              <button
+                className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold"
+                onClick={() => {
+                  setLoginOpen(true);
+                  setRegisterOpen(false);
+                }}
+              >
+                Sign in
+              </button>
+              <button
+                className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold"
+                onClick={() => {
+                  setRegisterOpen(true);
+                  setLoginOpen(false);
+                }}
+              >
+                Create Account
+              </button>
+            </>
+          )}
+
+          <SearchBar />
         </>
+      ) : (
+        <div className="flex gap-4 items-end">
+          <button
+            onClick={() => setLoginOpen(false)}
+            className="mb-1.5 font-semibold"
+          >
+            x
+          </button>
+          <LoginModal onSubmit={() => setLoginOpen(false)} />
+        </div>
       )}
 
-      <SearchBar />
-
-      {isLoginOpen && <LoginModal onSubmit={() => setLoginOpen(false)} />}
       {isRegisterOpen && (
-        <RegisterForm onSubmit={() => setRegisterOpen(false)} />
+        <div className="absolute top-20 bg-gray-600 h-screen w-full flex justify-center">
+          <div className="z-50 max-w-1/3 pt-5">
+            <RegisterForm onSubmit={() => setRegisterOpen(false)} />
+          </div>
+        </div>
       )}
     </header>
   );
@@ -69,7 +91,7 @@ function SearchBar() {
       <input
         type="text"
         placeholder="Search..."
-        className="flex-1 outline-none border-none ml-2 text-gray-700"
+        className="flex-1 outline-none border-none ml-2 text-gray-700 text-sm"
       />
     </div>
   );

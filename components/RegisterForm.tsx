@@ -3,7 +3,10 @@ import { useState } from "react";
 import Input from "@/components/Input";
 import { register } from "@/api/auth";
 
-export default function LoginModal({ onSubmit }: { onSubmit?: () => void }) {
+// TODO: handle errors
+export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -25,22 +28,24 @@ export default function LoginModal({ onSubmit }: { onSubmit?: () => void }) {
       const response = await register(formData);
       localStorage.setItem("access", response.data.access_token);
 
-      if (response.status == 'success') {
+      if (response.status === "success") {
         alert("Registration successful!");
       }
       onSubmit?.();
-    } catch (error) {
-      console.error("Registration failed:", error);
-      console.error("Form data:", formData);  
-      alert("Registration failed. Please try again.");
+    } catch (error: any) {
+      alert("Something went wrong during registration");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="bg-white text-black flex flex-col gap-4 py-8 px-20 border items-center rounded-lg shadow-lg">
+    <div className="bg-white text-black flex  flex-col gap-4 py-8 px-20 border items-center rounded-sm shadow-lg">
       <div className="flex flex-col gap-2 items-center">
-        <h1 className={`text-3xl font-serif`}>Create an Account</h1>
-        <p className="text-sm">Discover your next favorite books.</p>
+        <h1 className={`text-3xl font-serif text-center`}>Create an Account</h1>
+        <p className="text-sm text-center">
+          Discover your next favorite books.
+        </p>
       </div>
 
       <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>

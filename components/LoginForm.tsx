@@ -27,19 +27,14 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
       });
       onSubmit?.();
       alert("Login successful");
-    } catch (error) {
-      console.error("Login failed:", error);
+    } catch (error: any) {
+      alert("Something wrong happened during signin");
     }
   }
 
   return (
-    <div className="bg-white text-black flex flex-col gap-4 p-16 border items-center">
-      <div className="flex flex-col gap-2 items-center">
-        <h1 className={`text-3xl font-serif`}>Login to Your Account</h1>
-        <p>Discover your next favorite books.</p>
-      </div>
-
-      <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+    <div className="bg-white text-xs text-black flex gap-3 items-center">
+      <form className="flex gap-4" onSubmit={handleSubmit}>
         <Input
           label="Email"
           type="email"
@@ -60,15 +55,11 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
         />
         <button
           type="submit"
-          className="rounded-3xl border p-2 bg-black text-white w-full"
+          className="rounded-sm uppercase font-bold border p-2 bg-black text-white self-end text-center max-h-1/2"
         >
-          Login
+          sign in
         </button>
       </form>
-
-      <div className="flex justify-center text-sm">
-        <button>Forgot password?</button>
-      </div>
     </div>
   );
 }
