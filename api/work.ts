@@ -22,6 +22,23 @@ export interface Work {
   };
 }
 
+export interface SearchWorkResponse {
+  data?: {
+    numFound: number;
+    start: number;
+    docs: SearchWorkEntry[];
+  };
+}
+
+export interface SearchWorkEntry {
+  title: string;
+  cover_i: string;
+  author_name: string[];
+  author_key: string[];
+  first_publish_year?: number;
+  key: string;
+}
+
 interface SearchWorkQuery {
   title?: string;
   language?: string;
@@ -29,8 +46,8 @@ interface SearchWorkQuery {
   page?: number;
 }
 
-export const findWorks = async (query: string): Promise<Work[]> => {
-  const response = await apiClient.get<Work[]>(`/works?${query}`);
+export const findWorks = async (query: string): Promise<SearchWorkResponse> => {
+  const response = await apiClient.get<SearchWorkResponse>(`/works?${query}`);
   return response.data;
 };
 
