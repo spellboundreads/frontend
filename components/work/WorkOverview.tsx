@@ -1,8 +1,8 @@
 type WorkOverviewProps = {
   title: string;
   authorName: string;
-  publishedYear: number;
-  quote: string;
+  publishedYear?: number;
+  quote?: string;
 };
 
 export default function WorkOverview({
@@ -20,15 +20,19 @@ export default function WorkOverview({
           {authorName}
         </a>
       </p>
-      <p className="text-lg">
-        in{" "}
-        <a href="#" className="underline">
-          {publishedYear}
-        </a>
-      </p>
-      <p>
-        <i>“{quote}”</i>
-      </p>
+      {publishedYear && (
+        <p className="text-lg">
+          in{" "}
+          <a href="#" className="underline">
+            {publishedYear}
+          </a>
+        </p>
+      )}
+      {quote && (
+        <p>
+          <i>“{quote}”</i>
+        </p>
+      )}
     </div>
   );
 }
