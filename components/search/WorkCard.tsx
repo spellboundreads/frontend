@@ -6,6 +6,7 @@ interface WorkCardProps {
   description?: string;
   authors: AuthorChipProps[];
   cover?: string;
+  work_key: string;
 }
 
 interface AuthorChipProps {
@@ -14,6 +15,7 @@ interface AuthorChipProps {
 }
 
 export default function WorkCard({
+  work_key,
   title,
   first_published_year,
   description,
@@ -27,10 +29,12 @@ export default function WorkCard({
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
-          <h2 className="text-sm font-semibold">{title}</h2>
-          <p className="text-sm ">{first_published_year}</p>
-        </div>
+        <Link href={`${work_key}`}>
+          <div className="flex gap-2">
+            <h2 className="text-sm font-semibold">{title}</h2>
+            <p className="text-sm ">{first_published_year}</p>
+          </div>
+        </Link>
         <p className="line-clamp-6">{description}</p>
         <div className="flex gap-2 items-center">
           Written by

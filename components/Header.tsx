@@ -85,7 +85,7 @@ function UserInformation({
   return (
     <div className="flex items-center gap-3">
       <img
-        src={user.avatar_url || "/default_pfp.png"}
+        src={user.avatar_url || "/placeholder/user.png"}
         alt="User Avatar"
         className="size-7 rounded-full object-cover border-1"
       />
