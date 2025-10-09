@@ -19,7 +19,7 @@ export default function RootLayout({
         className={`${montserrat.variable} ${geistMono.variable} ${sourceSerif4.variable} ${montserrat.variable} antialiased`}
       >
         <AuthProvider>
-          <div className="min-h-screen bg-[#f5f3ee] relative ">
+          <div className=" overflow-x-hidden relative ">
             <Header />
             <div>{children}</div>
           </div>
