@@ -118,7 +118,7 @@ export default function Page() {
                 ))
               ) : (
                 <div className="  text-gray-800">
-                  <i>No reviews for this work yet.</i>
+                  <i>No reviews have been left for this work yet.</i>
                 </div>
               )}
             </div>
