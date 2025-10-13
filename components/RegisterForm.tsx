@@ -26,11 +26,7 @@ export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
     event?.preventDefault();
     try {
       const response = await register(formData);
-      localStorage.setItem("access", response.data.access_token);
-
-      if (response.status === "success") {
-        alert("Registration successful!");
-      }
+      localStorage.setItem("access", response.data.accessToken);
       onSubmit?.();
     } catch (error: any) {
       alert("Something went wrong during registration");

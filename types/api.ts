@@ -1,17 +1,18 @@
 import { Work, SearchWorkEntry } from "@/types/work";
+import { AxiosResponse } from "axios";
 
-export interface BaseResponse {
-  status: string;
-  data?: any;
-  message?: string; // for error messages
+export interface AuthResponse extends AxiosResponse {
+  data: {
+    accessToken: string;
+  };
 }
 
-export interface GetWorkResponse extends BaseResponse {
-  data?: Work;
+export interface GetWorkResponse extends AxiosResponse {
+  data: Work;
 }
 
-export interface SearchWorkResponse extends BaseResponse {
-  data?: {
+export interface SearchWorkResponse extends AxiosResponse {
+  data: {
     numFound: number;
     start: number;
     docs: SearchWorkEntry[];

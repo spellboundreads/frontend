@@ -1,7 +1,5 @@
-"use client"
-
+"use client";
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { useRouter } from "next/router";
 import * as authApi from "@/api/auth";
 
 interface User {
@@ -27,7 +25,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   // const router = useRouter();
 
@@ -36,12 +34,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const token = localStorage.getItem("accessToken");
       if (token) {
         try {
-          const currentUser = await authApi.getMe(); // call /users/me
-          setUser(currentUser.data);
+          const currentUser = await authApi.getMe();
+          setUser(currentUser as User);
         } catch (err) {
           console.error(err);
           setUser(null);
         }
+      } else {
+        setUser(null);
       }
       setLoading(false);
     };
@@ -51,16 +51,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (data: { email: string; password: string }) => {
     try {
       const response = await authApi.login(data);
-      const { access_token } = response.data;
+      const { accessToken } = response.data;
 
-      localStorage.setItem("accessToken", access_token);
+      localStorage.setItem("accessToken", accessToken);
 
-      const currentUser = await authApi.getMe(); // call /users/me
-      setUser(currentUser);
+      const currentUser = await authApi.getMe(); 
+      setUser(currentUser as User);
 
       // router.push("/work");
     } catch (err) {
-      console.error("Login failed:", err);
       throw err;
     }
   };
@@ -73,13 +72,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }) => {
     try {
       const response = await authApi.register(data);
-      const { access_token } = response.data;
+      const { accessToken } = response.data;
 
-      localStorage.setItem("accessToken", access_token);
+      localStorage.setItem("accessToken", accessToken);
 
-      // fetch current user after register
       const currentUser = await authApi.getMe();
-      setUser(currentUser);
+      setUser(currentUser as User);
 
       // router.push("/dashboard");
     } catch (err) {

@@ -1,4 +1,5 @@
 import apiClient from "@/lib/apiClient";
+import { AuthResponse } from "@/types/api";
 
 interface RegisterDto {
   email: string;
@@ -12,21 +13,20 @@ interface LoginDto {
   password: string;
 }
 
-interface AuthResponse {
-  status: string;
-  data: {
-    access_token: string;
-  };
-}
-
 export const register = async (data: RegisterDto): Promise<AuthResponse> => {
-  const response = await apiClient.post<AuthResponse>("/auth/register", data);
-  return response.data;
+  const response = await apiClient.post<AuthResponse["data"]>(
+    "/auth/register",
+    data
+  );
+  return response;
 };
 
 export const login = async (data: LoginDto): Promise<AuthResponse> => {
-  const response = await apiClient.post<AuthResponse>("/auth/login", data);
-  return response.data;
+  const response = await apiClient.post<AuthResponse["data"]>(
+    "/auth/login",
+    data
+  );
+  return response;
 };
 
 export const getMe = async (): Promise<any> => {
