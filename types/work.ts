@@ -1,3 +1,5 @@
+import { Review } from "./review";
+
 export interface Author {
   id: string;
   openlibrary_id: string;
@@ -31,6 +33,7 @@ export interface Work {
   updated_at: string;
   subjects: string[] | null;
   works_authors: WorkAuthor[];
+  reviews?: Review[];
 }
 
 export interface SearchWorkEntry {

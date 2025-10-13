@@ -1,11 +1,12 @@
-import { PublicUser } from "@/types/user";
+import { User } from "@/types/user";
 
 export interface Review {
   id: string;
-  content: string;
+  user_id: string;
+  work_id: string;
   rating: number;
-  users: PublicUser;
+  review_text: string | null;
+  users: User;
   created_at: string;
   updated_at: string;
 }
-
