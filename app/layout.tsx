@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { geistSans, geistMono, sourceSerif4, montserrat } from "@/fonts";
+import { beVietnamPro } from "@/fonts";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/Header";
@@ -15,9 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${montserrat.variable} ${geistMono.variable} ${sourceSerif4.variable} ${montserrat.variable} antialiased`}
-      >
+      <body className={`${beVietnamPro.variable} antialiased`}>
         <AuthProvider>
           <div className=" overflow-x-hidden relative ">
             <Header />
