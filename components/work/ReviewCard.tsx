@@ -33,7 +33,7 @@ export default function ReviewCard({
       <div>
         <div className="flex flex-col gap-2 ml-4">
           <div className="flex gap-2 items-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-800">
               Review by{" "}
               <Link
                 href={`/users/${userId}`}
@@ -49,7 +49,7 @@ export default function ReviewCard({
               precision={0.5}
             />
           </div>
-          <div className="text-sm text-gray-800">{reviewText}</div>
+          <div className="text-sm">{reviewText}</div>
         </div>
       </div>
     </div>

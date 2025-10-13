@@ -1,5 +1,4 @@
 "use client";
-import Header from "@/components/Header";
 import WorkCard from "@/components/work/WorkCard";
 import WorkOverview from "@/components/work/WorkOverview";
 import WorkSubjects from "@/components/work/WorkSubjects";
@@ -8,16 +7,16 @@ import { useState, useEffect } from "react";
 import { getWork, getImage } from "@/api/work";
 import { useParams } from "next/navigation";
 import { Work } from "@/types/work";
+import ReviewCard from "@/components/work/ReviewCard";
 
 export default function Page() {
   const [work, setWork] = useState<Work>();
   const { workOlid } = useParams<{ workOlid: string }>();
-
   useEffect(() => {
     const fetchWork = async () => {
       try {
-        const workDetails = await getWork(workOlid);
-        setWork(workDetails.data);
+        const response = await getWork(workOlid);
+        setWork(response.data);
       } catch (error) {
         console.error("Error fetching work details:", error);
       }
@@ -42,7 +41,11 @@ export default function Page() {
       <div className="bg-[#eae7da] flex gap-4 lg:px-24 px-12">
         <div className="w-[20rem]">
           <WorkCard
-            coverImage={work.covers ? getImage(work.covers[0]) : ""}
+            coverImage={
+              work.covers && work.covers.length > 0
+                ? getImage(work.covers[0])
+                : "/placeholder/work.png"
+            }
             title={work.title}
           />
         </div>
@@ -57,7 +60,9 @@ export default function Page() {
             }
             quote={work.excerpts ? work.excerpts[0] : undefined}
           />
-          {work.subjects && <WorkSubjects subjects={work.subjects} />}
+          {work.subjects && work.subjects.length > 0 && (
+            <WorkSubjects subjects={work.subjects} />
+          )}
         </div>
       </div>
 
@@ -88,6 +93,34 @@ export default function Page() {
                 workCount={200}
                 author_key={work.works_authors[0].authors.openlibrary_id}
               />
+            </div>
+          </div>
+
+          {/* User Review */}
+          <div>
+            <h2 className="font-bold text-xl mb-4">User Reviews</h2>
+            <div className="flex flex-col gap-8">
+              {work.reviews && work.reviews.length > 0 ? (
+                work.reviews.map((review) => (
+                  <ReviewCard
+                    key={review.id}
+                    userId={review.users.id}
+                    userAvatar={
+                      review.users.avatar_url || "/placeholder/user.png"
+                    }
+                    userDisplayName={
+                      review.users.display_name || review.users.username
+                    }
+                    createdAt={review.created_at}
+                    reviewText={review.review_text || ""}
+                    rating={review.rating}
+                  />
+                ))
+              ) : (
+                <div className="  text-gray-800">
+                  <i>No reviews for this work yet.</i>
+                </div>
+              )}
             </div>
           </div>
         </div>
