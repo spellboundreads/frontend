@@ -10,7 +10,7 @@ export default function WorkCard({ title, coverImage }: WorkCardProps) {
         <img
           src={coverImage}
           alt={`Cover of ${title}`}
-          className="shadow-lg shadow-amber-50 max-h-98"
+          className="shadow-lg shadow-amber-50 h-98"
         />
       </div>
       <AddToShelfButton />
