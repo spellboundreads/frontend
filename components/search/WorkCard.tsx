@@ -1,10 +1,13 @@
 import Link from "next/link";
 
+import { Author } from "@/types/work";
+import { getImage } from "@/api/work";
+
 interface WorkCardProps {
   title: string;
   first_published_year?: number;
   description?: string;
-  authors: AuthorChipProps[];
+  authors: Author[];
   cover?: string;
   work_key: string;
 }
@@ -22,8 +25,9 @@ export default function WorkCard({
   authors,
   cover,
 }: WorkCardProps) {
+  console.log("authors in WorkCard:", authors);
   return (
-    <div className="flex gap-6 w-full h-56 text-black text-xs border-b border-gray-400 p-4">
+    <div className="flex gap-6 w-full h-56 text-black text-xs border-b-1 border-gray-400 p-4">
       <div className="min-w-32 max-w-32 bg-white flex justify-center ">
         <img
           src={cover}
@@ -33,7 +37,7 @@ export default function WorkCard({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Link href={`${work_key}`}>
+        <Link href={`/works/${work_key}`}>
           <div className="flex gap-2">
             <h2 className="text-sm font-semibold">{title}</h2>
             <p className="text-sm ">{first_published_year}</p>
@@ -44,11 +48,11 @@ export default function WorkCard({
         </p>
         <div className="flex gap-2 max-h-6 items-center">
           <span className="text-xs">Written by</span>
-          {authors.slice(0, 2).map((author) => (
+          {authors.slice(0, 2).map((author, index) => (
             <AuthorChip
-              key={author.author_key}
-              author_name={author.author_name}
-              author_key={author.author_key}
+              key={index}
+              author_name={author.name}
+              author_key={author.openlibrary_id}
             />
           ))}
           {authors.length > 2 && (

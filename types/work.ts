@@ -25,7 +25,8 @@ export interface Work {
   id: string;
   openlibrary_id: string;
   title: string;
-  first_published_date: string | null;
+  first_publish_year: number | null;
+  first_published_date?: string | null;
   covers: string[] | null;
   description: string | null;
   excerpts: string[] | null;

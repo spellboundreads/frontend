@@ -12,9 +12,5 @@ export interface GetWorkResponse extends AxiosResponse {
 }
 
 export interface SearchWorkResponse extends AxiosResponse {
-  data: {
-    numFound: number;
-    start: number;
-    docs: SearchWorkEntry[];
-  };
+  data: Work[];
 }
