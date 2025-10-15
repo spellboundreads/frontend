@@ -90,7 +90,6 @@ export default function Page() {
                     : "/placeholder/author.png"
                 }
                 biography={work.works_authors[0].authors.bio || undefined}
-                workCount={200}
                 author_key={work.works_authors[0].authors.openlibrary_id}
               />
             </div>

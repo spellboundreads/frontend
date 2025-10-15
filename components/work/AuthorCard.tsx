@@ -4,7 +4,6 @@ type AuthorCardProps = {
   name: string;
   img?: string;
   biography?: string;
-  workCount: number;
   author_key: string;
 };
 
@@ -12,7 +11,6 @@ export default function AuthorCard({
   name,
   img,
   biography,
-  workCount,
   author_key,
 }: AuthorCardProps) {
   return (
@@ -30,7 +28,7 @@ export default function AuthorCard({
           >
             {name}
           </Link>
-          <p className="text-gray-700 text-sm">{workCount} works</p>
+          <p className="text-gray-700 text-sm">Author</p>
         </div>
       </div>
 
