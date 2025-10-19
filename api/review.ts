@@ -2,7 +2,7 @@ import apiClient from "@/lib/apiClient";
 import {
   CreateReviewPayload,
   GetReviewByUserWorkResponse,
-  Review,
+  UpdateReviewResponse,
 } from "@/types/review";
 
 export const createReview = async (payload: CreateReviewPayload) => {
@@ -16,6 +16,21 @@ export const getReviewByUserWork = async (
 ): Promise<GetReviewByUserWorkResponse> => {
   const response = await apiClient.get<GetReviewByUserWorkResponse["data"]>(
     `/reviews/by-user-work/${userId}/${workId}`
+  );
+  return response;
+};
+
+export const updateReview = async (
+  reviewId: string,
+  reviewText: string,
+  rating: number
+): Promise<UpdateReviewResponse> => {
+  const response = await apiClient.patch<UpdateReviewResponse["data"]>(
+    `/reviews/${reviewId}`,
+    {
+      review_text: reviewText,
+      rating,
+    }
   );
   return response;
 };

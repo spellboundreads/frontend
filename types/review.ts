@@ -20,3 +20,7 @@ export interface CreateReviewPayload {
 export interface GetReviewByUserWorkResponse {
   data: Review;
 }
+
+export interface UpdateReviewResponse {
+  data: Review;
+}
