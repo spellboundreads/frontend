@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
+  const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -28,40 +29,43 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
       });
       onSubmit?.();
       toast("Login successful");
+      window.location.reload();
     } catch (error: any) {
-      toast("Something wrong happened during signin");
+      if (error.response.data.statusCode === 404) {
+        setError("User not found. Please check your email.");
+      } else if (error.response.data.statusCode === 401) {
+        setError("Invalid credentials. Please try again.");
+      }
     }
   }
 
   return (
-      <form
-        className="flex flex-col gap-4 items-center"
-        onSubmit={handleSubmit}
+    <form className="flex flex-col gap-4 items-center" onSubmit={handleSubmit}>
+      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+      <Input
+        label="Email"
+        type="email"
+        id="email"
+        name="email"
+        required
+        value={formData.email}
+        onChange={handleChange}
+      />
+      <Input
+        label="password"
+        type="password"
+        id="password"
+        name="password"
+        required
+        value={formData.password}
+        onChange={handleChange}
+      />
+      <button
+        type="submit"
+        className="rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2"
       >
-        <Input
-          label="Email"
-          type="email"
-          id="email"
-          name="email"
-          required
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <Input
-          label="password"
-          type="password"
-          id="password"
-          name="password"
-          required
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <button
-          type="submit"
-          className="rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2"
-        >
-          sign in
-        </button>
-      </form>
+        sign in
+      </button>
+    </form>
   );
 }
