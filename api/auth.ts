@@ -29,7 +29,7 @@ export const login = async (data: LoginDto): Promise<AuthResponse> => {
   return response;
 };
 
-export const getMe = async (): Promise<any> => {
-  const response = await apiClient.get<any>("/users/me");
-  return response.data;
+export const logout = async () => {
+  const res = await apiClient.post("/auth/logout");
+  return res.data;
 };
