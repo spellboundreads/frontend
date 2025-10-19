@@ -14,6 +14,7 @@ import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { EditReviewDialog } from "@/components/review/editreview";
 
 export default function Page() {
   const [work, setWork] = useState<Work>();
@@ -203,22 +204,44 @@ export default function Page() {
           <div>
             <h2 className="text-2xl font-semibold">Community Reviews</h2>
             <div className="flex flex-col gap-8 mt-4">
-              {work.reviews && work.reviews.length > 0 ? (
-                work.reviews.map((review) => (
-                  <ReviewCard
-                    key={review.id}
-                    userId={review.users.id}
-                    userAvatar={
-                      review.users.avatar_url || "/placeholder/user.png"
-                    }
-                    userDisplayName={
-                      review.users.display_name || review.users.username
-                    }
-                    createdAt={review.created_at}
-                    reviewText={review.review_text || ""}
-                    rating={review.rating}
-                  />
-                ))
+              {hasExistingReview && user && review ? (
+                <ReviewCard
+                  key={user.id}
+                  userId={user.id}
+                  userAvatar={user.avatar_url || "/placeholder/user.png"}
+                  userDisplayName={user.display_name || user.username}
+                  createdAt={
+                    work.reviews?.find((r) => r.users.id === user.id)
+                      ?.created_at || new Date().toISOString()
+                  }
+                  reviewText={review.review_text || ""}
+                  rating={review.rating * 2}
+                  onChange={(rating: number, reviewText: string) =>
+                    setReview({ rating, review_text: reviewText })
+                  }
+                />
+              ) : null}
+              {work.reviews && work.reviews.length > 0 && user ? (
+                work.reviews
+                  .filter((review) => review.users.id !== user.id)
+                  .map((review) => (
+                    <ReviewCard
+                      key={review.id}
+                      userId={review.users.id}
+                      userAvatar={
+                        review.users.avatar_url || "/placeholder/user.png"
+                      }
+                      userDisplayName={
+                        review.users.display_name || review.users.username
+                      }
+                      createdAt={review.created_at}
+                      reviewText={review.review_text || ""}
+                      rating={review.rating}
+                      onChange={(rating: number, reviewText: string) =>
+                        setReview({ rating, review_text: reviewText })
+                      }
+                    />
+                  ))
               ) : (
                 <div className="  text-gray-800">
                   <i>No reviews have been left for this work yet.</i>
@@ -227,9 +250,6 @@ export default function Page() {
             </div>
           </div>
         </div>
-
-        {/* Other details */}
-        <div className="flex flex-col gap-5"></div>
       </div>
     </div>
   );
