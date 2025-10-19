@@ -12,6 +12,7 @@ import { Work } from "@/types/work";
 import ReviewCard from "@/components/work/ReviewCard";
 import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 
@@ -96,7 +97,7 @@ export default function Page() {
     return (
       <div className="text-black flex flex-col gap-10 bg-[#eae7da]">
         <div className="flex justify-center items-center h-96">
-          <span>Loading...</span>
+          <Spinner className="size-8" />
         </div>
       </div>
     );
@@ -136,9 +137,9 @@ export default function Page() {
 
       {/* Work Details */}
 
-      <div className="bg-[#F8F5EA] flex lg:flex-row flex-col lg:gap-36 gap-8 px-24 py-8">
+      <div className="bg-[#F8F5EA] flex lg:flex-row flex-col lg:gap-36 gap-8 pl-24 pr-92 py-8">
         {/* Description and author */}
-        <div className="min-w-2xl flex flex-col gap-8">
+        <div className="min-w-xl flex flex-col gap-8">
           <div className="flex flex-col gap-2">
             <h2 className="font-bold text-2xl">Description</h2>
             <div className="text-sm">
@@ -196,7 +197,11 @@ export default function Page() {
                   }}
                   value={review?.review_text || ""}
                 ></Textarea>
-                <Button type="submit" onClick={handleReviewSubmitClick}>
+                <Button
+                  type="submit"
+                  onClick={handleReviewSubmitClick}
+                  disabled={!review || !review.review_text || !review.rating}
+                >
                   Submit
                 </Button>
               </form>
@@ -239,7 +244,6 @@ export default function Page() {
                         review_text: response.data.review_text || "",
                         id: response.data.id,
                       });
-                      // Refresh the work to get updated reviews
                       const workResponse = await getWork(workOlid);
                       setWork(workResponse.data);
                     } catch (error) {
