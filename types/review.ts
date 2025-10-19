@@ -10,3 +10,9 @@ export interface Review {
   created_at: string;
   updated_at: string;
 }
+
+export interface CreateReviewPayload {
+  work_id: string;
+  rating: number;
+  review_text?: string;
+}
