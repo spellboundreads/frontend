@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import LoginModal from "./LoginForm";
+import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -29,6 +29,7 @@ export default function Header() {
 
       {!user && (
         <>
+          <LoginDialog />
           <RegisterDialog />
         </>
       )}
@@ -57,7 +58,6 @@ function UserDropdown({
 }) {
   if (!user) return null;
   function handleLogout() {
-    // Implement logout logic here
     localStorage.removeItem("accessToken");
     window.location.reload();
   }
@@ -105,6 +105,27 @@ function RegisterDialog() {
           </DialogDescription>
         </DialogHeader>
         <RegisterForm />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function LoginDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
+          Sign In
+        </button>
+      </DialogTrigger>
+      <DialogContent className="flex flex-col items-center w-fit py-12 px-24">
+        <DialogHeader>
+          <DialogTitle className={`text-3xl text-center`}>Sign In</DialogTitle>
+          <DialogDescription className="mt-2 text-sm text-center text-gray-800">
+            Welcome back! Please enter your details.
+          </DialogDescription>
+        </DialogHeader>
+        <LoginForm />
       </DialogContent>
     </Dialog>
   );
