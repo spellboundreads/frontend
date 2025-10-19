@@ -1,6 +1,6 @@
 import { Work, SearchWorkEntry } from "@/types/work";
 import { AxiosResponse } from "axios";
-import { Author } from "@/types/author";
+import { Author, AuthorWorkEntry } from "@/types/author";
 
 export interface AuthResponse extends AxiosResponse {
   data: {
@@ -16,8 +16,13 @@ export interface GetAuthorResponse extends AxiosResponse {
   data: Author;
 }
 
+export interface GetAuthorWorkResponse extends AxiosResponse {
+  data: {
+    size: number;
+    entries: AuthorWorkEntry[];
+  };
+}
+
 export interface SearchWorkResponse extends AxiosResponse {
-  num_found: number;
-  start: number;
-  docs: SearchWorkEntry[];
+  data: { num_found: number; start: number; docs: SearchWorkEntry[] };
 }

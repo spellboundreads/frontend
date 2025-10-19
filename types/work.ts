@@ -8,7 +8,7 @@ export interface WorkAuthor {
   updated_at: string;
   authors: Author;
 }
-
+  
 export interface Work {
   id: string;
   openlibrary_id: string;
