@@ -101,7 +101,7 @@ type AuthorOverviewProps = {
 
 function AuthorOverview({ name, portrait, bio }: AuthorOverviewProps) {
   return (
-    <div className=" p-8 flex gap-6 min-h-xl max-w-4xl min-w-3xl mx-auto w-full">
+    <div className=" p-8 flex gap-12 min-h-xl max-w-5xl min-w-3xl mx-auto w-full">
       <div className="h-42 w-42 flex-shrink-0">
         <img
           src={portrait || "/placeholder/author.png"}
