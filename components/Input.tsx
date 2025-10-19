@@ -19,7 +19,7 @@ export default function Input({
       )}
       <input
         id={id}
-        className={`border text-xs border-gray-300 rounded-md p-2 min-w-52 focus:shadow-md focus:outline-none ${className}`}
+        className={`border text-sm border-gray-300 rounded-md w-full p-2 min-w-64 focus:shadow-md focus:outline-none ${className}`}
         {...props}
       />
     </div>
