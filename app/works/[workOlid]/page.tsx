@@ -135,9 +135,9 @@ export default function Page() {
 
       {/* Work Details */}
 
-      <div className="bg-[#F8F5EA] flex lg:flex-row flex-col lg:gap-36 gap-8 px-24 py-8 ">
+      <div className="bg-[#F8F5EA] flex lg:flex-row flex-col lg:gap-36 gap-8 px-24 py-8">
         {/* Description and author */}
-        <div className="max-w-2xl flex flex-col gap-8">
+        <div className="min-w-2xl flex flex-col gap-8">
           <div className="flex flex-col gap-2">
             <h2 className="font-bold text-2xl">Description</h2>
             <div className="text-sm">
