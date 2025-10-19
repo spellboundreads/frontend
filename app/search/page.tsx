@@ -5,18 +5,18 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { findWorks, getImage, getWork } from "@/api/work";
 import { SearchWorkResponse } from "@/types/api";
-import { Author } from "@/types/work";
 
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.toString();
 
-  const [works, setWorks] = useState<any[]>([]);
+  const [works, setWorks] = useState<SearchWorkResponse>();
 
   useEffect(() => {
     async function fetchWorks() {
       try {
         const response: SearchWorkResponse = await findWorks(query);
+        console.log(response.data);
         setWorks(response.data);
       } catch (err) {
         console.error(err);
@@ -29,26 +29,32 @@ function SearchResults() {
     <div className="flex gap-32 px-32 py-6 text-black">
       <div className="w-3xl flex flex-col gap-8">
         <div className="border-b border-gray-400 p-2">
-          <p>Showing results for {query}</p>
+          {works && <p>Showing {works.num_found} results</p>}
         </div>
         <div className="flex flex-col gap-4">
-          {works.map((work, index) => (
-            <WorkCard
-              key={index}
-              work_key={work.openlibrary_id}
-              title={work.title}
-              first_published_year={work.first_published_year}
-              authors={work.works_authors.map(
-                (wa: { authors: Author }) => wa.authors
-              )}
-              cover={
-                work.covers?.[0]
-                  ? getImage(work.covers[0])
-                  : "/placeholder/cover.png"
-              }
-              description={work.description}
-            />
-          ))}
+          {works !== undefined &&
+            works.docs.map((work, index: number) => {
+              const authors =
+                work.author_key?.map((key: string, i: number) => ({
+                  key,
+                  name: work.author_name?.[i] ?? "Unknown Author",
+                })) ?? [];
+
+              return (
+                <WorkCard
+                  key={index}
+                  work_key={work.key}
+                  title={work.title}
+                  first_publish_year={work.first_publish_year}
+                  authors={authors}
+                  cover={
+                    work.cover_i
+                      ? getImage(work.cover_i.toString())
+                      : "/placeholder/cover.png"
+                  }
+                />
+              );
+            })}
         </div>
       </div>
 
