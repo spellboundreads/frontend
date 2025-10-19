@@ -5,21 +5,21 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { findWorks, getImage, getWork } from "@/api/work";
 import { SearchWorkResponse } from "@/types/api";
+import { toast } from "sonner";
 
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.toString();
 
-  const [works, setWorks] = useState<SearchWorkResponse>();
+  const [works, setWorks] = useState<SearchWorkResponse["data"]>();
 
   useEffect(() => {
     async function fetchWorks() {
       try {
         const response: SearchWorkResponse = await findWorks(query);
-        console.log(response.data);
         setWorks(response.data);
       } catch (err) {
-        console.error(err);
+        toast("An error occurred while fetching search results.");
       }
     }
     fetchWorks();
@@ -43,7 +43,7 @@ function SearchResults() {
               return (
                 <WorkCard
                   key={index}
-                  work_key={work.key}
+                  work_key={work.key.split("/").pop() || ""}
                   title={work.title}
                   first_publish_year={work.first_publish_year}
                   authors={authors}
