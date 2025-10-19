@@ -14,7 +14,6 @@ import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
-import { EditReviewDialog } from "@/components/review/editreview";
 
 export default function Page() {
   const [work, setWork] = useState<Work>();
