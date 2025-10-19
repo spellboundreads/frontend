@@ -1,17 +1,5 @@
 import { Review } from "./review";
-
-export interface Author {
-  id: string;
-  openlibrary_id: string;
-  name: string;
-  birth_date: string | null;
-  death_date: string | null;
-  bio: string | null;
-  portrait_url?: string | null;
-  photos: string[] | null;
-  created_at: string;
-  updated_at: string;
-}
+import { Author } from "./author";
 
 export interface WorkAuthor {
   work_id: string;
@@ -25,8 +13,7 @@ export interface Work {
   id: string;
   openlibrary_id: string;
   title: string;
-  first_publish_year: number | null;
-  first_published_date?: string | null;
+  first_publish_year?: number;
   covers: string[] | null;
   description: string | null;
   excerpts: string[] | null;
