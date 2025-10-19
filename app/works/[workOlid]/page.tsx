@@ -5,13 +5,21 @@ import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
 import { useState, useEffect } from "react";
 import { getWork, getImage } from "@/api/work";
+import { createReview } from "@/api/review";
+import { CreateReviewPayload } from "@/types/review";
+import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "next/navigation";
 import { Work } from "@/types/work";
 import ReviewCard from "@/components/work/ReviewCard";
+import Rating from "@mui/material/Rating";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const [work, setWork] = useState<Work>();
   const { workOlid } = useParams<{ workOlid: string }>();
+  const [review, setReview] = useState<
+    { rating: number; review_text: string } | undefined
+  >();
   useEffect(() => {
     const fetchWork = async () => {
       try {
@@ -24,6 +32,21 @@ export default function Page() {
 
     fetchWork();
   }, []);
+
+  async function handleReviewSubmitClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      if (review && work) {
+        const response = await createReview({
+          work_id: work?.id,
+          review_text: review.review_text,
+          rating: review.rating * 2,
+        });
+      }
+    } catch (error) {
+      console.error("Error creating review:", error);
+    }
+  }
 
   if (!work) {
     return (
@@ -95,10 +118,45 @@ export default function Page() {
             </div>
           </div>
 
+          <div>
+            <h2 className="text-xl font-semibold">What do you think?</h2>
+            <form className="mt-4 flex flex-col gap-2">
+              <div className="text-center">
+                <Rating
+                  size="large"
+                  name="half-rating"
+                  precision={0.5}
+                  onChange={(e, value) => {
+                    setReview((prev) => ({
+                      review_text: prev?.review_text || "",
+                      rating: value || 0,
+                    }));
+                  }}
+                  value={review?.rating || 0}
+                />
+              </div>
+
+              <Textarea
+                placeholder="Leave a review"
+                rows={4}
+                className="border-gray-500 "
+                onChange={(e) => {
+                  setReview({
+                    review_text: e.target.value,
+                    rating: review?.rating ?? 0,
+                  });
+                }}
+                value={review?.review_text || ""}
+              ></Textarea>
+              <Button type="submit" onClick={handleReviewSubmitClick}>
+                Submit
+              </Button>
+            </form>
+          </div>
           {/* User Review */}
           <div>
-            <h2 className="font-bold text-xl mb-4">User Reviews</h2>
-            <div className="flex flex-col gap-8">
+            <h2 className="text-xl font-semibold">Community Reviews</h2>
+            <div className="flex flex-col gap-8 mt-4">
               {work.reviews && work.reviews.length > 0 ? (
                 work.reviews.map((review) => (
                   <ReviewCard
