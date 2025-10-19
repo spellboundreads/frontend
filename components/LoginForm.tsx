@@ -34,8 +34,10 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
   }
 
   return (
-    <div className="bg-white text-xs text-black flex gap-3 items-center">
-      <form className="flex gap-4" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col gap-4 items-center"
+        onSubmit={handleSubmit}
+      >
         <Input
           label="Email"
           type="email"
@@ -56,11 +58,10 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
         />
         <button
           type="submit"
-          className="rounded-sm uppercase font-bold border p-2 bg-black text-white self-end text-center max-h-1/2"
+          className="rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2"
         >
           sign in
         </button>
       </form>
-    </div>
   );
 }
