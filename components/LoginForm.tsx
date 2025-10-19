@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
 import Input from "@/components/Input";
-import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { login } from "@/api/auth";
 
 export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
