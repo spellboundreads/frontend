@@ -32,17 +32,23 @@ export default function ReviewCard({
       </div>
       <div>
         <div className="flex flex-col gap-2 ml-4">
-          <div className="flex gap-2 items-center">
-            <p className="text-sm text-gray-800">
-              Review by{" "}
-              <Link
-                href={`/users/${userId}`}
-                className="font-semibold hover:underline"
-              >
-                {userDisplayName}
-              </Link>
-            </p>
+          <div className="flex flex-col">
+            <div className="flex items-center text-sm text-gray-800">
+              <p>
+                Review by{" "}
+                <Link
+                  href={`/users/${userId}`}
+                  className="font-semibold hover:underline"
+                >
+                  {userDisplayName}
+                </Link>
+              </p>
+              <p className="text-xs">
+                , at {new Date(createdAt).toLocaleString()}
+              </p>
+            </div>
             <Rating
+              size="small"
               name="read-only"
               value={rating / 2}
               readOnly
