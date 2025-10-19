@@ -1,7 +1,7 @@
 import Rating from "@mui/material/Rating";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
+import { EditReviewDialog } from "../review/editreview";
 interface ReviewCardProps {
   userId: string;
   userAvatar: string;
@@ -9,6 +9,8 @@ interface ReviewCardProps {
   createdAt: string;
   reviewText: string;
   rating: number;
+  onChange: (rating: number, reviewText: string) => void;
+  onUpdate?: (rating: number, reviewText: string) => void;
 }
 
 export default function ReviewCard({
@@ -18,6 +20,8 @@ export default function ReviewCard({
   createdAt,
   reviewText,
   rating,
+  onChange,
+  onUpdate,
 }: ReviewCardProps) {
   const { user } = useAuth();
 
@@ -60,12 +64,12 @@ export default function ReviewCard({
           </div>
           <div className="text-sm">{reviewText}</div>
           {user && user.id === userId && (
-            <button
-              onClick={() => {}}
-              className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
-            >
-              Edit
-            </button>
+            <EditReviewDialog
+              rating={rating}
+              reviewText={reviewText}
+              onChange={onChange}
+              onUpdate={onUpdate || (() => {})}
+            />
           )}
 
           {user && user.id !== userId && (

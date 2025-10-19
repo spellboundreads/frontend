@@ -5,7 +5,7 @@ import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
 import { useState, useEffect } from "react";
 import { getWork, getImage } from "@/api/work";
-import { createReview, getReviewByUserWork } from "@/api/review";
+import { createReview, getReviewByUserWork, updateReview } from "@/api/review";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "next/navigation";
 import { Work } from "@/types/work";
@@ -21,7 +21,7 @@ export default function Page() {
   const { workOlid } = useParams<{ workOlid: string }>();
   const { user } = useAuth();
   const [review, setReview] = useState<
-    { rating: number; review_text: string } | undefined
+    { rating: number; review_text: string; id: string } | undefined
   >(undefined);
   const [hasExistingReview, setHasExistingReview] = useState(false);
 
@@ -48,13 +48,14 @@ export default function Page() {
         setReview({
           rating: response.data.rating / 2,
           review_text: response.data.review_text || "",
+          id: response.data.id,
         });
         console.log("response:", response);
 
         setHasExistingReview(true);
       } catch (error) {
         setHasExistingReview(false);
-        setReview({ rating: 0, review_text: "" });
+        setReview({ rating: 0, review_text: "", id: "" });
       }
     }
     fetchUserReview();
@@ -176,6 +177,7 @@ export default function Page() {
                       setReview((prev) => ({
                         review_text: prev?.review_text || "",
                         rating: value || 0,
+                        id: prev?.id || "",
                       }));
                     }}
                     value={review?.rating || 0}
@@ -190,6 +192,7 @@ export default function Page() {
                     setReview({
                       review_text: e.target.value,
                       rating: review?.rating ?? 0,
+                      id: review?.id || "",
                     });
                   }}
                   value={review?.review_text || ""}
@@ -216,9 +219,34 @@ export default function Page() {
                   }
                   reviewText={review.review_text || ""}
                   rating={review.rating * 2}
-                  onChange={(rating: number, reviewText: string) =>
-                    setReview({ rating, review_text: reviewText })
-                  }
+                  onChange={(rating: number, reviewText: string) => {
+                    setReview({
+                      rating: rating / 2,
+                      review_text: reviewText,
+                      id: review.id,
+                    });
+                  }}
+                  onUpdate={async (rating: number, reviewText: string) => {
+                    if (!review) return;
+                    try {
+                      const response = await updateReview(
+                        review.id,
+                        reviewText,
+                        rating
+                      );
+                      toast("Review has been updated successfully.");
+                      setReview({
+                        rating: response.data.rating / 2,
+                        review_text: response.data.review_text || "",
+                        id: response.data.id,
+                      });
+                      // Refresh the work to get updated reviews
+                      const workResponse = await getWork(workOlid);
+                      setWork(workResponse.data);
+                    } catch (error) {
+                      toast("An error occurred while updating your review.");
+                    }
+                  }}
                 />
               ) : null}
               {work.reviews && work.reviews.length > 0 && user ? (
@@ -238,7 +266,11 @@ export default function Page() {
                       reviewText={review.review_text || ""}
                       rating={review.rating}
                       onChange={(rating: number, reviewText: string) =>
-                        setReview({ rating, review_text: reviewText })
+                        setReview({
+                          rating,
+                          review_text: reviewText,
+                          id: review.id,
+                        })
                       }
                     />
                   ))
