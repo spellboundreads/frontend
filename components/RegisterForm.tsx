@@ -6,8 +6,7 @@ import { toast } from "sonner";
 
 // TODO: handle errors
 export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -23,22 +22,30 @@ export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
     }));
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
     try {
       const response = await register(formData);
       localStorage.setItem("access", response.data.accessToken);
+      toast("Registration successful");
+      window.location.reload();
       onSubmit?.();
     } catch (error: any) {
-      toast("Something went wrong during registration");
-    } finally {
-      setLoading(false);
+      console.log(error);
+      if (error.response.data.statusCode === 409) {
+        setError(
+          `This ${error.response.data.fields[0]} has been registered with another account.`
+        );
+      } else {
+        toast("Something wrong happened during registration");
+      }
     }
   }
 
   return (
     <div className="bg-white text-black flex flex-col gap-4  items-center">
-      <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-4 max-w-72" onSubmit={handleSubmit}>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         <Input
           label="Email"
           type="email"
