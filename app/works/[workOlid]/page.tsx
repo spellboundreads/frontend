@@ -5,7 +5,7 @@ import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
 import { useState, useEffect } from "react";
 import { getWork, getImage } from "@/api/work";
-import { createReview } from "@/api/review";
+import { createReview, getReviewByUserWork } from "@/api/review";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "next/navigation";
 import { Work } from "@/types/work";
@@ -13,13 +13,17 @@ import ReviewCard from "@/components/work/ReviewCard";
 import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Page() {
   const [work, setWork] = useState<Work>();
   const { workOlid } = useParams<{ workOlid: string }>();
+  const { user } = useAuth();
   const [review, setReview] = useState<
     { rating: number; review_text: string } | undefined
-  >();
+  >(undefined);
+  const [hasExistingReview, setHasExistingReview] = useState(false);
+
   useEffect(() => {
     const fetchWork = async () => {
       try {
@@ -32,6 +36,28 @@ export default function Page() {
 
     fetchWork();
   }, []);
+
+  useEffect(() => {
+    async function fetchUserReview() {
+      if (!work || !user) return;
+
+      try {
+        const response = await getReviewByUserWork(work.id, user.id);
+        if (!response || !response.data) throw new Error("No review found");
+        setReview({
+          rating: response.data.rating / 2,
+          review_text: response.data.review_text || "",
+        });
+        console.log("response:", response);
+
+        setHasExistingReview(true);
+      } catch (error) {
+        setHasExistingReview(false);
+        setReview({ rating: 0, review_text: "" });
+      }
+    }
+    fetchUserReview();
+  }, [work, user]);
 
   async function handleReviewSubmitClick(
     e: React.MouseEvent<HTMLButtonElement>
@@ -136,41 +162,43 @@ export default function Page() {
             </div>
           </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold">What do you think?</h2>
-            <form className="mt-4 flex flex-col gap-2">
-              <div className="text-center">
-                <Rating
-                  size="large"
-                  name="half-rating"
-                  precision={0.5}
-                  onChange={(e, value) => {
-                    setReview((prev) => ({
-                      review_text: prev?.review_text || "",
-                      rating: value || 0,
-                    }));
-                  }}
-                  value={review?.rating || 0}
-                />
-              </div>
+          {user && !hasExistingReview && (
+            <div>
+              <h2 className="text-2xl font-semibold">What do you think?</h2>
+              <form className="mt-4 flex flex-col gap-2">
+                <div className="text-center">
+                  <Rating
+                    size="large"
+                    name="half-rating"
+                    precision={0.5}
+                    onChange={(e, value) => {
+                      setReview((prev) => ({
+                        review_text: prev?.review_text || "",
+                        rating: value || 0,
+                      }));
+                    }}
+                    value={review?.rating || 0}
+                  />
+                </div>
 
-              <Textarea
-                placeholder="Leave a review"
-                rows={4}
-                className="border-gray-500 "
-                onChange={(e) => {
-                  setReview({
-                    review_text: e.target.value,
-                    rating: review?.rating ?? 0,
-                  });
-                }}
-                value={review?.review_text || ""}
-              ></Textarea>
-              <Button type="submit" onClick={handleReviewSubmitClick}>
-                Submit
-              </Button>
-            </form>
-          </div>
+                <Textarea
+                  placeholder="Leave a review"
+                  rows={4}
+                  className="border-gray-500 "
+                  onChange={(e) => {
+                    setReview({
+                      review_text: e.target.value,
+                      rating: review?.rating ?? 0,
+                    });
+                  }}
+                  value={review?.review_text || ""}
+                ></Textarea>
+                <Button type="submit" onClick={handleReviewSubmitClick}>
+                  Submit
+                </Button>
+              </form>
+            </div>
+          )}
           {/* User Review */}
           <div>
             <h2 className="text-2xl font-semibold">Community Reviews</h2>
