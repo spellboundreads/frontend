@@ -13,6 +13,8 @@ import { Work } from "@/types/work";
 import ReviewCard from "@/components/work/ReviewCard";
 import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [work, setWork] = useState<Work>();
@@ -20,6 +22,7 @@ export default function Page() {
   const [review, setReview] = useState<
     { rating: number; review_text: string } | undefined
   >();
+  const router = useRouter();
   useEffect(() => {
     const fetchWork = async () => {
       try {
@@ -33,7 +36,9 @@ export default function Page() {
     fetchWork();
   }, []);
 
-  async function handleReviewSubmitClick(e: React.MouseEvent<HTMLButtonElement>) {
+  async function handleReviewSubmitClick(
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
     e.preventDefault();
     try {
       if (review && work) {
@@ -42,6 +47,18 @@ export default function Page() {
           review_text: review.review_text,
           rating: review.rating * 2,
         });
+        toast("Review has been created successfully.");
+        console.log(response.data);
+        setWork((prev) => {
+          if (prev) {
+            return {
+              ...prev,
+              reviews: [...(prev.reviews || []), response.data],
+            };
+          }
+          return prev;
+        });
+        setReview(undefined);
       }
     } catch (error) {
       console.error("Error creating review:", error);
@@ -95,7 +112,7 @@ export default function Page() {
         {/* Description and author */}
         <div className="max-w-2xl flex flex-col gap-8">
           <div className="flex flex-col gap-2">
-            <h2 className="font-bold text-xl">Description</h2>
+            <h2 className="font-bold text-2xl">Description</h2>
             <div className="text-sm">
               {work.description || (
                 <i>No description has been provided for this work.</i>
@@ -103,7 +120,7 @@ export default function Page() {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <h2 className="font-bold text-xl">About the Author</h2>
+            <h2 className="font-bold text-2xl">About the Author</h2>
             <div>
               <AuthorCard
                 name={work.works_authors[0].authors.name}
@@ -119,7 +136,7 @@ export default function Page() {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold">What do you think?</h2>
+            <h2 className="text-2xl font-semibold">What do you think?</h2>
             <form className="mt-4 flex flex-col gap-2">
               <div className="text-center">
                 <Rating
@@ -155,7 +172,7 @@ export default function Page() {
           </div>
           {/* User Review */}
           <div>
-            <h2 className="text-xl font-semibold">Community Reviews</h2>
+            <h2 className="text-2xl font-semibold">Community Reviews</h2>
             <div className="flex flex-col gap-8 mt-4">
               {work.reviews && work.reviews.length > 0 ? (
                 work.reviews.map((review) => (
