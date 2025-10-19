@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 type WorkOverviewProps = {
   title: string;
   authorName: string;
+  authorKey: string;
   publishedYear?: number;
   quote?: string;
 };
@@ -8,6 +11,7 @@ type WorkOverviewProps = {
 export default function WorkOverview({
   title,
   authorName,
+  authorKey,
   publishedYear,
   quote,
 }: WorkOverviewProps) {
@@ -16,16 +20,16 @@ export default function WorkOverview({
       <h1 className="text-4xl font-semibold">{title}</h1>
       <p className="text-lg">
         by{" "}
-        <a href="#" className="underline">
+        <Link href={`/authors/${authorKey}`} className="underline">
           {authorName}
-        </a>
+        </Link>
       </p>
       {publishedYear && (
         <p className="text-lg">
           in{" "}
-          <a href="#" className="underline">
+          <p className="underline">
             {publishedYear}
-          </a>
+          </p>
         </p>
       )}
       {quote && (
