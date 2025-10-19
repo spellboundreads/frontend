@@ -1,6 +1,7 @@
 import Rating from "@mui/material/Rating";
 import Link from "next/link";
-
+import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
 interface ReviewCardProps {
   userId: string;
   userAvatar: string;
@@ -18,6 +19,8 @@ export default function ReviewCard({
   reviewText,
   rating,
 }: ReviewCardProps) {
+  const { user } = useAuth();
+
   return (
     <div className="flex ">
       {/* User Avatar */}
@@ -56,6 +59,23 @@ export default function ReviewCard({
             />
           </div>
           <div className="text-sm">{reviewText}</div>
+          {user && user.id === userId && (
+            <button
+              onClick={() => {}}
+              className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
+            >
+              Edit
+            </button>
+          )}
+
+          {user && user.id !== userId && (
+            <button
+              onClick={() => {}}
+              className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
+            >
+              Like
+            </button>
+          )}
         </div>
       </div>
     </div>
