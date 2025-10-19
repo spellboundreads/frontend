@@ -32,7 +32,7 @@ export default function AuthorCard({
         </div>
       </div>
 
-      {biography && <p className="text-sm">{biography}</p>}
+      {biography && <p className="text-sm">{biography}</p> }
     </div>
   );
 }
