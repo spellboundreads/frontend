@@ -6,7 +6,6 @@ import AuthorCard from "@/components/work/AuthorCard";
 import { useState, useEffect } from "react";
 import { getWork, getImage } from "@/api/work";
 import { createReview } from "@/api/review";
-import { CreateReviewPayload } from "@/types/review";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "next/navigation";
 import { Work } from "@/types/work";
@@ -14,7 +13,6 @@ import ReviewCard from "@/components/work/ReviewCard";
 import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [work, setWork] = useState<Work>();
@@ -22,14 +20,13 @@ export default function Page() {
   const [review, setReview] = useState<
     { rating: number; review_text: string } | undefined
   >();
-  const router = useRouter();
   useEffect(() => {
     const fetchWork = async () => {
       try {
         const response = await getWork(workOlid);
         setWork(response.data);
       } catch (error) {
-        console.error("Error fetching work details:", error);
+        toast("An error occurred while fetching the work data.");
       }
     };
 
@@ -42,26 +39,29 @@ export default function Page() {
     e.preventDefault();
     try {
       if (review && work) {
-        const response = await createReview({
-          work_id: work?.id,
-          review_text: review.review_text,
-          rating: review.rating * 2,
-        });
-        toast("Review has been created successfully.");
-        console.log(response.data);
-        setWork((prev) => {
-          if (prev) {
-            return {
-              ...prev,
-              reviews: [...(prev.reviews || []), response.data],
-            };
-          }
-          return prev;
-        });
-        setReview(undefined);
+        if (!review.rating) {
+          toast("Choose a rating!");
+        } else {
+          const response = await createReview({
+            work_id: work?.id,
+            review_text: review.review_text,
+            rating: review.rating * 2,
+          });
+          toast("Review has been created successfully.");
+          setWork((prev) => {
+            if (prev) {
+              return {
+                ...prev,
+                reviews: [...(prev.reviews || []), response.data],
+              };
+            }
+            return prev;
+          });
+          setReview(undefined);
+        }
       }
     } catch (error) {
-      console.error("Error creating review:", error);
+      toast("An error occurred while submitting your review.");
     }
   }
 
@@ -93,9 +93,10 @@ export default function Page() {
           <WorkOverview
             title={work.title}
             authorName={work.works_authors[0].authors.name}
+            authorKey={work.works_authors[0].authors.openlibrary_id}
             publishedYear={
-              work.first_published_date
-                ? new Date(work.first_published_date).getUTCFullYear()
+              work.first_publish_year
+                ? new Date(work.first_publish_year).getUTCFullYear()
                 : undefined
             }
             quote={work.excerpts ? work.excerpts[0] : undefined}
