@@ -16,3 +16,7 @@ export interface CreateReviewPayload {
   rating: number;
   review_text?: string;
 }
+
+export interface GetReviewByUserWorkResponse {
+  data: Review;
+}
