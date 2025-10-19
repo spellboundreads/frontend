@@ -33,7 +33,7 @@ export default function AuthorWorksSection() {
       try {
         const response = await getAuthorWorks(authorOlid);
         const filteredEntries = response.data.entries.filter(
-          (work) => work.covers && work.covers.length > 0
+          (work) => work.covers && work.covers.length > 0 && work.description
         );
         response.data.entries = filteredEntries;
         setAuthorWorks(response.data);
