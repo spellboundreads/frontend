@@ -25,12 +25,9 @@ export default function WorkOverview({
         </Link>
       </p>
       {publishedYear && (
-        <p className="text-lg">
-          in{" "}
-          <p className="underline">
-            {publishedYear}
-          </p>
-        </p>
+        <div className="text-lg flex items-center gap-2">
+          in <p className="underline">{publishedYear}</p>
+        </div>
       )}
       {quote && (
         <p>
