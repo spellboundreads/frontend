@@ -37,14 +37,7 @@ export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
   }
 
   return (
-    <div className="bg-white text-black flex  flex-col gap-4 py-8 px-20 border items-center rounded-sm shadow-lg">
-      <div className="flex flex-col gap-2 items-center">
-        <h1 className={`text-3xl font-serif text-center`}>Create an Account</h1>
-        <p className="text-sm text-center">
-          Discover your next favorite books.
-        </p>
-      </div>
-
+    <div className="bg-white text-black flex flex-col gap-4  items-center">
       <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
         <Input
           label="Email"
