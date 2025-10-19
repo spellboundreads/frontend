@@ -100,9 +100,7 @@ function RegisterDialog() {
           <DialogTitle className={`text-3xl text-center`}>
             Create an Account
           </DialogTitle>
-          <DialogDescription className="mt-2 text-sm text-center text-gray-800">
-            Discover your next favorite books.
-          </DialogDescription>
+          
         </DialogHeader>
         <RegisterForm />
       </DialogContent>
