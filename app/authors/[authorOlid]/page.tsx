@@ -32,8 +32,11 @@ export default function AuthorWorksSection() {
     async function fetchAuthorWorks() {
       try {
         const response = await getAuthorWorks(authorOlid);
+        const filteredEntries = response.data.entries.filter(
+          (work) => work.covers && work.covers.length > 0
+        );
+        response.data.entries = filteredEntries;
         setAuthorWorks(response.data);
-        console.log(response.data.entries);
       } catch (err) {
         toast("Can't fetch author's works.");
       }
