@@ -100,7 +100,6 @@ function RegisterDialog() {
           <DialogTitle className={`text-3xl text-center`}>
             Create an Account
           </DialogTitle>
-          
         </DialogHeader>
         <RegisterForm />
       </DialogContent>
@@ -119,9 +118,6 @@ function LoginDialog() {
       <DialogContent className="flex flex-col items-center w-fit py-12 px-24">
         <DialogHeader>
           <DialogTitle className={`text-3xl text-center`}>Sign In</DialogTitle>
-          <DialogDescription className="mt-2 text-sm text-center text-gray-800">
-            Welcome back! Please enter your details.
-          </DialogDescription>
         </DialogHeader>
         <LoginForm />
       </DialogContent>
