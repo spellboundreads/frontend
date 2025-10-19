@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { beVietnamPro } from "@/fonts";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -18,14 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${beVietnamPro.variable} antialiased`}>
-        <AuthProvider>
-          <div className=" overflow-x-hidden relative ">
-            <Header />
-            <Toaster />
+        <div className=" overflow-x-hidden relative ">
+          <Header />
+          <Toaster />
 
-            <div>{children}</div>
-          </div>
-        </AuthProvider>
+          <div>{children}</div>
+        </div>
       </body>
     </html>
   );
