@@ -4,95 +4,109 @@ import { useAuth } from "@/context/AuthContext";
 import LoginModal from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import SearchIcon from "@mui/icons-material/Search";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+  DialogHeader,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function Header() {
   const { user } = useAuth();
-  const [isLoginOpen, setLoginOpen] = useState(false);
-  const [isRegisterOpen, setRegisterOpen] = useState(false);
 
   return (
     <header className="px-2 text-gray-700 shadow-sm py-4 bg-white flex justify-end gap-4 items-center border-b border-gray-300 sticky top-0 z-50">
-      {!isLoginOpen ? (
+      {user && <UserDropdown user={user} />}
+
+      {!user && (
         <>
-          {user && <UserInformation user={user} />}
-
-          {!user && (
-            <>
-              <button
-                className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold"
-                onClick={() => {
-                  setLoginOpen(true);
-                  setRegisterOpen(false);
-                }}
-              >
-                Sign in
-              </button>
-              <button
-                className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold"
-                onClick={() => {
-                  setRegisterOpen(true);
-                  setLoginOpen(false);
-                }}
-              >
-                Create Account
-              </button>
-            </>
-          )}
-
-          <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
-            works
-          </button>
-          <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
-            shelves
-          </button>
-          <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
-            works
-          </button>
-          <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
-            members
-          </button>
-          <SearchBar />
+          <RegisterDialog />
         </>
-      ) : (
-        <div className="flex gap-4 items-end">
-          <button
-            onClick={() => setLoginOpen(false)}
-            className="mb-1.5 font-semibold"
-          >
-            x
-          </button>
-          <LoginModal onSubmit={() => setLoginOpen(false)} />
-        </div>
       )}
 
-      {isRegisterOpen && (
-        <div className="absolute top-20 bg-gray-600 h-screen w-full flex justify-center">
-          <div className="z-50 max-w-1/3 pt-5">
-            <RegisterForm onSubmit={() => setRegisterOpen(false)} />
-          </div>
-        </div>
-      )}
+      <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
+        works
+      </button>
+      <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
+        shelves
+      </button>
+      <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
+        works
+      </button>
+      <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
+        members
+      </button>
+      <SearchBar />
     </header>
   );
 }
 
-function UserInformation({
+function UserDropdown({
   user,
 }: {
   user: { username: string; avatar_url?: string } | null;
 }) {
   if (!user) return null;
+  function handleLogout() {
+    // Implement logout logic here
+    localStorage.removeItem("accessToken");
+    window.location.reload();
+  }
   return (
-    <div className="flex items-center gap-3">
-      <img
-        src={user.avatar_url || "/placeholder/user.png"}
-        alt="User Avatar"
-        className="size-7 rounded-full object-cover border-1"
-      />
-      <div className="max-w-42 truncate block font-semibold">
-        {user.username}
-      </div>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className="rounded-sm bg-transparent border-none shadow-none text-gray-800 hover:bg-[#f0f0f0] hover:text-gray-800 p-1.5">
+          <div className="flex items-center gap-3">
+            <img
+              src={user.avatar_url || "/placeholder/user.png"}
+              alt="User Avatar"
+              className="size-7 rounded-full object-cover border-1"
+            />
+            <div className="max-w-42 truncate block font-semibold">
+              {user.username}
+            </div>
+          </div>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="start">
+        <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function RegisterDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
+          Create Account
+        </button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className={`text-3xl text-center`}>
+            Create an Account
+          </DialogTitle>
+          <DialogDescription className="mt-2 text-sm text-center text-gray-800">
+            Discover your next favorite books.
+          </DialogDescription>
+        </DialogHeader>
+        <RegisterForm />
+      </DialogContent>
+    </Dialog>
   );
 }
 
