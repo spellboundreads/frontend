@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Input from "@/components/Input";
 import { register } from "@/api/auth";
+import { toast } from "sonner";
 
 // TODO: handle errors
 export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
@@ -29,7 +30,7 @@ export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
       localStorage.setItem("access", response.data.accessToken);
       onSubmit?.();
     } catch (error: any) {
-      alert("Something went wrong during registration");
+      toast("Something went wrong during registration");
     } finally {
       setLoading(false);
     }

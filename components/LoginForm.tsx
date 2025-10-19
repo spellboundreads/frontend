@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Input from "@/components/Input";
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
   const { login } = useAuth();
@@ -26,9 +27,9 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
         password: formData.password,
       });
       onSubmit?.();
-      alert("Login successful");
+      toast("Login successful");
     } catch (error: any) {
-      alert("Something wrong happened during signin");
+      toast("Something wrong happened during signin");
     }
   }
 
