@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import apiClient from "./apiClient";
 import { AuthResponse } from "@/types/api";
+import { cache } from "react";
 
 interface RegisterDto {
   email: string;
@@ -35,7 +36,7 @@ export const logout = async () => {
   return res.data;
 };
 
-export async function getMe() {
+export const getMe = cache(async () => {
   const cookieStore = await cookies();
   const tokenCookie = cookieStore.get("token");
 
@@ -51,4 +52,4 @@ export async function getMe() {
   } catch (err) {
     return null;
   }
-}
+});
