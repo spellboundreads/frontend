@@ -7,17 +7,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/api/auth";
+import { User } from "@/types/user";
 
-export default function UserDropdown({
-  user,
-}: {
-  user: { username: string; avatar_url?: string } | null;
-}) {
-  if (!user) return null;
+export default function UserDropdown({ user }: { user: User }) {
   async function handleLogout() {
     await logout();
     window.location.reload();
   }
+  if (!user) return null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
