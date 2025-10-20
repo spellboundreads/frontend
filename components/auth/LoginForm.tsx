@@ -3,8 +3,9 @@ import { useState } from "react";
 import Input from "@/components/Input";
 import { toast } from "sonner";
 import { login } from "@/api/auth";
-
+import { useRouter } from "next/navigation";
 export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
@@ -22,13 +23,14 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
     try {
-      const data = await login({
+      await login({
         email: formData.email,
         password: formData.password,
       });
       onSubmit?.();
       toast("Login successful");
-      window.location.reload();
+
+      router.refresh();
     } catch (error: any) {
       if (error.response.data.statusCode === 404) {
         setError("User not found. Please check your email.");
