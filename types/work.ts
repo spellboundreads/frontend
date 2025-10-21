@@ -23,14 +23,3 @@ export interface Work {
   works_authors: WorkAuthor[];
   reviews?: Review[];
 }
-
-export interface SearchWorkEntry {
-  author_key: string[];
-  author_name: string[];
-  cover_i?: number;
-  edition_count: number;
-  first_publish_year?: number;
-  key: string;
-  language?: string[];
-  title: string;
-}

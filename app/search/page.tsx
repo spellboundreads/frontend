@@ -1,12 +1,8 @@
 import WorkCard from "@/components/search/WorkCard";
-// import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { findWorks, getImage, getWork } from "@/api/work";
+import { findWorks, getImage } from "@/api/work";
 import Loading from "./loading";
-
-interface SearchProps {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+import { SearchWorkEntry } from "@/types/api";
 
 async function SearchResults({
   searchParams,
@@ -14,17 +10,14 @@ async function SearchResults({
   searchParams: Record<string, string | string[] | undefined>;
 }) {
   const works = await findWorks(searchParams);
-
-  console.log(searchParams);
-
   return (
     <div className="w-3xl flex flex-col gap-8">
       <div className="border-b border-gray-400 p-2">
         {works && <p>There are {works.num_found} results</p>}
       </div>
       <div className="flex flex-col gap-4">
-        {works !== undefined &&
-          works.docs.map((work, index: number) => {
+        {works &&
+          works.docs.map((work: SearchWorkEntry, index: number) => {
             const authors =
               work.author_key?.map((key: string, i: number) => ({
                 key,
