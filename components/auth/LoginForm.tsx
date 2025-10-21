@@ -27,10 +27,9 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
         email: formData.email,
         password: formData.password,
       });
+      window.location.reload();
       onSubmit?.();
       toast("Login successful");
-
-      router.refresh();
     } catch (error: any) {
       if (error.response.data.statusCode === 404) {
         setError("User not found. Please check your email.");
