@@ -1,38 +1,21 @@
+"use client";
 import Rating from "@mui/material/Rating";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 import { EditReviewDialog } from "../review/editreview";
+import { Review } from "@/types/review";
 interface ReviewCardProps {
-  userId: string;
-  userAvatar: string;
-  userDisplayName: string;
-  createdAt: string;
-  reviewText: string;
-  rating: number;
-  onChange: (rating: number, reviewText: string) => void;
-  onUpdate?: (rating: number, reviewText: string) => void;
+  review: Review;
 }
 
-export default function ReviewCard({
-  userId,
-  userAvatar,
-  userDisplayName,
-  createdAt,
-  reviewText,
-  rating,
-  onChange,
-  onUpdate,
-}: ReviewCardProps) {
-  const { user } = useAuth();
-
+export default function ReviewCard({ review }: ReviewCardProps) {
   return (
     <div className="flex ">
       {/* User Avatar */}
       <div>
         <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
           <img
-            src={userAvatar}
-            alt={userDisplayName}
+            src={review.users.avatar_url || "/placeholder/user.png"}
+            alt={review.users.display_name || review.users.username}
             className="w-full h-full object-cover"
           />
         </div>
@@ -44,42 +27,42 @@ export default function ReviewCard({
               <p>
                 Review by{" "}
                 <Link
-                  href={`/users/${userId}`}
+                  href={`/users/${review.users.id}`}
                   className="font-semibold hover:underline"
                 >
-                  {userDisplayName}
+                  {review.users.display_name || review.users.username}
                 </Link>
               </p>
               <p className="text-xs">
-                , at {new Date(createdAt).toLocaleString()}
+                , at {new Date(review.created_at).toLocaleString()}
               </p>
             </div>
             <Rating
               size="small"
               name="read-only"
-              value={rating / 2}
+              value={review.rating / 2}
               readOnly
               precision={0.5}
             />
           </div>
-          <div className="text-sm">{reviewText}</div>
-          {user && user.id === userId && (
+          <div className="text-sm">{review.review_text}</div>
+          {/* {user && user.id === userId && (
             <EditReviewDialog
               rating={rating}
               reviewText={reviewText}
               onChange={onChange}
               onUpdate={onUpdate || (() => {})}
             />
-          )}
+          )} */}
 
-          {user && user.id !== userId && (
-            <button
-              onClick={() => {}}
-              className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
-            >
-              Like
-            </button>
-          )}
+          {/* {user && user.id !== userId && ( */}
+          <button
+            onClick={() => {}}
+            className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
+          >
+            Like
+          </button>
+          {/* )} */}
         </div>
       </div>
     </div>
