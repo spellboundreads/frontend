@@ -2,11 +2,13 @@
 import { useState } from "react";
 import Input from "@/components/Input";
 import { toast } from "sonner";
-import { login } from "@/api/auth";
+import { loginAction } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
+
 export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,20 +24,33 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
     try {
-      await login({
+      const result = await loginAction({
         email: formData.email,
         password: formData.password,
       });
-      window.location.reload();
-      onSubmit?.();
-      toast("Login successful");
-    } catch (error: any) {
-      if (error.response.data.statusCode === 404) {
-        setError("User not found. Please check your email.");
-      } else if (error.response.data.statusCode === 401) {
-        setError("Invalid credentials. Please try again.");
+
+      if (result.success) {
+        toast.success("Login successful");
+        onSubmit?.();
+        // Use router.refresh() to revalidate server components
+        router.refresh();
+      } else {
+        if (result.statusCode === 404) {
+          setError("User not found. Please check your email.");
+        } else if (result.statusCode === 401) {
+          setError("Invalid credentials. Please try again.");
+        } else {
+          setError(result.error || "Login failed. Please try again.");
+        }
       }
+    } catch (error: any) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -62,9 +77,10 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
       />
       <button
         type="submit"
-        className="rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2"
+        disabled={isLoading}
+        className="rounded-sm uppercase font-bold border p-2 bg-black text-white text-center max-h-1/2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        sign in
+        {isLoading ? "Signing in..." : "sign in"}
       </button>
     </form>
   );

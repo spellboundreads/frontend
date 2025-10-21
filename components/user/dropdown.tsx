@@ -6,15 +6,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { logout } from "@/api/auth";
+import { logoutAction } from "@/app/actions/auth";
 import { User } from "@/types/user";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function UserDropdown({ user }: { user: User }) {
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   async function handleLogout() {
-    await logout();
-    window.location.reload();
+    setIsLoggingOut(true);
+    try {
+      await logoutAction();
+      toast.success("Logged out successfully");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to log out");
+    } finally {
+      setIsLoggingOut(false);
+    }
   }
+
   if (!user) return null;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,8 +49,12 @@ export default function UserDropdown({ user }: { user: User }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start">
         <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-          Log out
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+        >
+          {isLoggingOut ? "Logging out..." : "Log out"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

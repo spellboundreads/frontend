@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 import Input from "@/components/Input";
-import { register } from "@/api/auth";
+import { registerAction } from "@/app/actions/auth";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-// TODO: handle errors
 export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -24,20 +26,29 @@ export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
     try {
-      const response = await register(formData);
-      toast("Registration successful");
-      window.location.reload();
-      onSubmit?.();
-    } catch (error: any) {
-      console.log(error);
-      if (error.response.data.statusCode === 409) {
-        setError(
-          `This ${error.response.data.fields[0]} has been registered with another account.`
-        );
+      const result = await registerAction(formData);
+
+      if (result.success) {
+        toast.success("Registration successful");
+        onSubmit?.();
+        router.refresh();
       } else {
-        toast("Something wrong happened during registration");
+        if (result.statusCode === 409) {
+          setError(
+            result.error || "This email or username is already registered."
+          );
+        } else {
+          setError(result.error || "Something went wrong during registration");
+        }
       }
+    } catch (error: any) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -75,9 +86,10 @@ export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
 
         <button
           type="submit"
-          className="rounded-3xl border p-2 bg-black text-white w-full"
+          disabled={isLoading}
+          className="rounded-3xl border p-2 bg-black text-white w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create an account
+          {isLoading ? "Creating account..." : "Create an account"}
         </button>
       </form>
 
