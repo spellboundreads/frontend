@@ -26,7 +26,6 @@ export default function RegisterForm({ onSubmit }: { onSubmit?: () => void }) {
     event?.preventDefault();
     try {
       const response = await register(formData);
-      localStorage.setItem("access", response.data.accessToken);
       toast("Registration successful");
       window.location.reload();
       onSubmit?.();

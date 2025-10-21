@@ -5,6 +5,7 @@ import {
   DialogTrigger,
   DialogTitle,
   DialogHeader,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 export default function RegisterDialog() {
@@ -20,6 +21,9 @@ export default function RegisterDialog() {
           <DialogTitle className={`text-3xl text-center`}>
             Create an Account
           </DialogTitle>
+          <DialogDescription className="text-center mt-2 mb-6">
+            Fill in the details to create your account.
+          </DialogDescription>
         </DialogHeader>
         <RegisterForm />
       </DialogContent>
