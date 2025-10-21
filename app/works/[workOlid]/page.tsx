@@ -6,13 +6,8 @@ import { getWork, getImage } from "@/api/work";
 import { createReview, getReviewByUserWork, updateReview } from "@/api/review";
 import { Textarea } from "@/components/ui/textarea";
 import { Work } from "@/types/work";
-import ReviewCard from "@/components/work/ReviewCard";
-import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
 import { getMe } from "@/lib/auth";
-import { User } from "@/types/user";
 import ReviewSection from "@/components/review/review-section";
 
 export default async function Page({
@@ -22,7 +17,7 @@ export default async function Page({
 }) {
   const { workOlid } = await params;
   const work: Work = (await getWork(workOlid)).data;
-  const user = getMe();
+  const user = await getMe();
 
   return (
     <div className="text-black flex flex-col gap-10 pt-4 bg-[#eae7da]">
@@ -85,13 +80,13 @@ export default async function Page({
             </div>
           </div>
 
-          {/* Community Review */}
-          {work.reviews && work.reviews.length > 0 ? (
-            <ReviewSection reviews={work.reviews} />
-          ) : (
-            <div className="  text-gray-800">
-              <i>No reviews have been left for this work yet.</i>
-            </div>
+          {/* Reviews */}
+          {work.reviews && (
+            <ReviewSection
+              reviews={work.reviews}
+              workId={work.id}
+              user={user || null}
+            />
           )}
         </div>
       </div>
