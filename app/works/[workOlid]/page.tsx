@@ -3,10 +3,7 @@ import WorkOverview from "@/components/work/WorkOverview";
 import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
 import { getWork, getImage } from "@/api/work";
-import { createReview, getReviewByUserWork, updateReview } from "@/api/review";
-import { Textarea } from "@/components/ui/textarea";
 import { Work } from "@/types/work";
-import { Button } from "@/components/ui/button";
 import { getMe } from "@/lib/auth";
 import ReviewSection from "@/components/review/review-section";
 
