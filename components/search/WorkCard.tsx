@@ -25,7 +25,6 @@ export default function WorkCard({
   authors,
   cover,
 }: WorkCardProps) {
-  console.log("key in WorkCard:", work_key);
   return (
     <div className="flex gap-6 w-full h-56 text-black text-xs border-b-1 border-gray-400 p-4">
       <div className="min-w-32 max-w-32 bg-white flex justify-center ">
