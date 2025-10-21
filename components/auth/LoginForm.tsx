@@ -2,13 +2,11 @@
 import { useState } from "react";
 import Input from "@/components/Input";
 import { toast } from "sonner";
-import { loginAction } from "@/app/actions/auth";
+import { login } from "@/api/auth";
 import { useRouter } from "next/navigation";
-
 export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,33 +22,20 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
     try {
-      const result = await loginAction({
+      await login({
         email: formData.email,
         password: formData.password,
       });
-
-      if (result.success) {
-        toast.success("Login successful");
-        onSubmit?.();
-        // Use router.refresh() to revalidate server components
-        router.refresh();
-      } else {
-        if (result.statusCode === 404) {
-          setError("User not found. Please check your email.");
-        } else if (result.statusCode === 401) {
-          setError("Invalid credentials. Please try again.");
-        } else {
-          setError(result.error || "Login failed. Please try again.");
-        }
-      }
+      window.location.reload();
+      onSubmit?.();
+      toast("Login successful");
     } catch (error: any) {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
+      if (error.response.data.statusCode === 404) {
+        setError("User not found. Please check your email.");
+      } else if (error.response.data.statusCode === 401) {
+        setError("Invalid credentials. Please try again.");
+      }
     }
   }
 
@@ -77,10 +62,9 @@ export default function LoginForm({ onSubmit }: { onSubmit?: () => void }) {
       />
       <button
         type="submit"
-        disabled={isLoading}
-        className="rounded-sm uppercase font-bold border p-2 bg-black text-white text-center max-h-1/2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2"
       >
-        {isLoading ? "Signing in..." : "sign in"}
+        sign in
       </button>
     </form>
   );
