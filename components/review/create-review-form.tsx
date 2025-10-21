@@ -6,38 +6,37 @@ import { useState, useEffect } from "react";
 import { CreateReviewPayload } from "@/types/review";
 import { toast } from "sonner";
 import { createReview } from "@/api/review";
+import { Review } from "@/types/review";
 
 interface CreateReviewFormProps {
   workId: string;
-  onSubmit: () => void;
+  onSubmit: (review: Review) => void;
 }
 
-export default function CreateReviewForm({ workId, onSubmit }: CreateReviewFormProps) {
+export default function CreateReviewForm({
+  workId,
+  onSubmit,
+}: CreateReviewFormProps) {
   const [rating, setRating] = useState<number | null>(null);
   const [reviewText, setReviewText] = useState<string>("");
 
-  async function handleReviewSubmitClick(
-    e: React.MouseEvent<HTMLButtonElement>
-  ) {
-    if (!reviewText || !rating) {
-      toast("Please provide both a rating and a review text.");
-      return;
-    }
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const formData: CreateReviewPayload = {
-      rating: rating * 2,
-      review_text: reviewText || "",
-      work_id: workId,
-    };
-
-    try {
-      await createReview(formData);
-      toast.success("Review submitted successfully!");
-      onSubmit();
-    } catch (error) {
-      toast.error("Failed to submit review. Please try again.");
+    if (rating && reviewText) {
+      try {
+        const formData: CreateReviewPayload = {
+          rating: rating * 2,
+          review_text: reviewText,
+          work_id: workId,
+        };
+        const response = await createReview(formData);
+        toast.success("Review submitted successfully!");
+        onSubmit(response.data);
+      } catch (error) {
+        toast.error("Failed to submit review. Please try again.");
+      }
     }
-  }
+  };
 
   return (
     <div>
@@ -66,7 +65,7 @@ export default function CreateReviewForm({ workId, onSubmit }: CreateReviewFormP
         ></Textarea>
         <Button
           type="submit"
-          onClick={handleReviewSubmitClick}
+          onClick={handleSubmit}
           disabled={!reviewText || !rating}
         >
           Submit
