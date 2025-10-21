@@ -2,7 +2,7 @@
 
 import { Review } from "@/types/review";
 import ReviewCard from "../work/ReviewCard";
-import ReviewForm from "./review-form";
+import CreateReviewForm from "./create-review-form";
 import { useState } from "react";
 import { User } from "@/types/user";
 
@@ -26,7 +26,10 @@ export default function ReviewSection({
   return (
     <>
       {!hasUserReviewed && (
-        <ReviewForm workId={workId} onSubmit={() => setHasUserReview(true)} />
+        <CreateReviewForm
+          workId={workId}
+          onSubmit={() => setHasUserReview(true)}
+        />
       )}
       <div>
         <h2 className="text-2xl font-semibold">Community Reviews</h2>

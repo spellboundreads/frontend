@@ -7,11 +7,12 @@ import { CreateReviewPayload } from "@/types/review";
 import { toast } from "sonner";
 import { createReview } from "@/api/review";
 
-interface ReviewFormProps {
+interface CreateReviewFormProps {
   workId: string;
+  onSubmit: () => void;
 }
 
-export default function ReviewForm({ workId }: ReviewFormProps) {
+export default function CreateReviewForm({ workId, onSubmit }: CreateReviewFormProps) {
   const [rating, setRating] = useState<number | null>(null);
   const [reviewText, setReviewText] = useState<string>("");
 
@@ -32,6 +33,7 @@ export default function ReviewForm({ workId }: ReviewFormProps) {
     try {
       await createReview(formData);
       toast.success("Review submitted successfully!");
+      onSubmit();
     } catch (error) {
       toast.error("Failed to submit review. Please try again.");
     }
