@@ -48,7 +48,9 @@ export default function ReviewSection({
       <div>
         <h2 className="text-2xl font-semibold">Community Reviews</h2>
         <div className="flex flex-col gap-8 mt-4">
-          {currentUserReview && <ReviewCard review={currentUserReview} />}
+          {currentUserReview && (
+            <ReviewCard review={currentUserReview} user={user} />
+          )}
           {reviews.length > 0 ? (
             reviews.map((review) => (
               <ReviewCard key={review.id} review={review} />

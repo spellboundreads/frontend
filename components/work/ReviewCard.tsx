@@ -3,11 +3,18 @@ import Rating from "@mui/material/Rating";
 import Link from "next/link";
 import { EditReviewDialog } from "../review/editreview";
 import { Review } from "@/types/review";
+import { User } from "@/types/user";
+import { useState } from "react";
+
 interface ReviewCardProps {
   review: Review;
+  user?: User | null;
 }
 
-export default function ReviewCard({ review }: ReviewCardProps) {
+export default function ReviewCard({ review, user }: ReviewCardProps) {
+  const [rating, setRating] = useState(review.rating);
+  const [reviewText, setReviewText] = useState(review.review_text);
+
   return (
     <div className="flex ">
       {/* User Avatar */}
@@ -30,7 +37,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
                   href={`/users/${review.users.id}`}
                   className="font-semibold hover:underline"
                 >
-                  {review.users.display_name || review.users.username}
+                  {user ? "you" : review.users.username}
                 </Link>
               </p>
               <p className="text-xs">
@@ -40,29 +47,28 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             <Rating
               size="small"
               name="read-only"
-              value={review.rating / 2}
+              value={rating / 2}
               readOnly
               precision={0.5}
             />
           </div>
-          <div className="text-sm">{review.review_text}</div>
-          {/* {user && user.id === userId && (
+          <div className="text-sm">{reviewText}</div>
+          {user ? (
             <EditReviewDialog
-              rating={rating}
-              reviewText={reviewText}
-              onChange={onChange}
-              onUpdate={onUpdate || (() => {})}
+              review={review}
+              onUpdate={(rating, reviewText) => {
+                setRating(rating);
+                setReviewText(reviewText);
+              }}
             />
-          )} */}
-
-          {/* {user && user.id !== userId && ( */}
-          <button
-            onClick={() => {}}
-            className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
-          >
-            Like
-          </button>
-          {/* )} */}
+          ) : (
+            <button
+              onClick={() => {}}
+              className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
+            >
+              Like
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ export interface Review {
   user_id: string;
   work_id: string;
   rating: number;
-  review_text: string | null;
+  review_text: string;
   users: User;
   created_at: string;
   updated_at: string;

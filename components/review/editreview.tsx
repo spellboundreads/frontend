@@ -11,28 +11,41 @@ import {
 import Rating from "@mui/material/Rating";
 import { Textarea } from "../ui/textarea";
 import { useState } from "react";
+import { Review } from "@/types/review";
+import { updateReview } from "@/api/review";
+import { toast } from "sonner";
 
 export function EditReviewDialog({
-  rating,
-  reviewText,
-  onChange,
+  review,
   onUpdate,
 }: {
-  rating: number;
-  reviewText: string;
-  onChange: (rating: number, reviewText: string) => void;
+  review: Review;
   onUpdate: (rating: number, reviewText: string) => void;
 }) {
-  const [newRating, setNewRating] = useState(rating / 2);
-  const [newReviewText, setNewReviewText] = useState(reviewText);
+  const [newRating, setNewRating] = useState(review.rating / 2);
+  const [newReviewText, setNewReviewText] = useState(review.review_text);
+
+  async function handleReviewUpdateClick() {
+    try {
+      const response = await updateReview(
+        review.id,
+        newReviewText,
+        newRating * 2
+      );
+      toast("Updated review successfully");
+      onUpdate(response.data.rating, response.data.review_text);
+    } catch (error) {
+      toast("Failed to update review.");
+    }
+  }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <button
           onClick={() => {
-            setNewRating(rating / 2);
-            setNewReviewText(reviewText);
+            setNewRating(review.rating / 2);
+            setNewReviewText(review.review_text);
           }}
           className="bg-transparent text-xs text-gray-700 hover:underline w-fit text-left"
         >
@@ -75,12 +88,10 @@ export function EditReviewDialog({
           <DialogClose asChild>
             <Button
               type="button"
-              onClick={() => {
-                onChange(newRating * 2, newReviewText);
-                onUpdate(newRating * 2, newReviewText);
-              }}
+              onClick={handleReviewUpdateClick}
               disabled={
-                newReviewText !== reviewText || newRating * 2 !== rating
+                newReviewText !== review.review_text ||
+                newRating * 2 !== review.rating
                   ? false
                   : true
               }
