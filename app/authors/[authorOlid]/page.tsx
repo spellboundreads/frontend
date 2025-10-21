@@ -1,11 +1,5 @@
-"use client";
 import { getImage } from "@/api/work";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { getAuthor, getAuthorWorks } from "@/api/author";
-import { GetAuthorWorkResponse } from "@/types/api";
-import { Author } from "@/types/author";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -18,43 +12,14 @@ import {
 import WorkCard from "@/components/search/WorkCard";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function AuthorWorksSection() {
-  const { authorOlid } = useParams<{ authorOlid: string }>();
-  const [author, setAuthor] = useState<Author>();
-  const [authorWorks, setAuthorWorks] =
-    useState<GetAuthorWorkResponse["data"]>();
-
-  useEffect(() => {
-    async function fetchAuthor() {
-      try {
-        const response = await getAuthor(authorOlid);
-        setAuthor((prev) => {
-          return {
-            ...prev,
-            ...response.data,
-          };
-        });
-      } catch (err) {
-        toast("Can't fetch author's data.");
-      }
-    }
-
-    async function fetchAuthorWorks() {
-      try {
-        const response = await getAuthorWorks(authorOlid);
-        const filteredEntries = response.data.entries.filter(
-          (work) => work.covers && work.covers.length > 0 && work.description
-        );
-        response.data.entries = filteredEntries;
-        setAuthorWorks(response.data);
-      } catch (err) {
-        toast("Can't fetch author's works.");
-      }
-    }
-
-    fetchAuthor();
-    fetchAuthorWorks();
-  }, []);
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ authorOlid: string }>;
+}) {
+  const { authorOlid } = await params;
+  const author = (await getAuthor(authorOlid)).data;
+  const authorWorks = (await getAuthorWorks(authorOlid)).data;
 
   return author ? (
     <div className="flex flex-col">
@@ -77,20 +42,28 @@ export default function AuthorWorksSection() {
               Showing {author.name}'s works
             </h2>
             <div className="flex flex-col gap-4 max-w-4xl">
-              {authorWorks.entries.slice(0, 5).map((work) => (
-                <WorkCard
-                  key={work.key.split("/").pop()}
-                  work_key={work.key.split("/").pop() || ""}
-                  title={work.title}
-                  first_publish_year={work.first_publish_year}
-                  cover={
-                    work.covers && work.covers.length > 0
-                      ? getImage(work.covers[0].toString())
-                      : undefined
-                  }
-                  description={work.description ? work.description : undefined}
-                />
-              ))}
+              {authorWorks.entries
+                .filter(
+                  (work) =>
+                    work.description && work.covers && work.covers.length > 0
+                )
+                .slice(0, 5)
+                .map((work) => (
+                  <WorkCard
+                    key={work.key.split("/").pop()}
+                    work_key={work.key.split("/").pop() || ""}
+                    title={work.title}
+                    first_publish_year={work.first_publish_year}
+                    cover={
+                      work.covers && work.covers.length > 0
+                        ? getImage(work.covers[0].toString())
+                        : undefined
+                    }
+                    description={
+                      work.description ? work.description : undefined
+                    }
+                  />
+                ))}
             </div>
           </div>
         </div>
