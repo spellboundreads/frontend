@@ -1,107 +1,28 @@
-"use client";
 import WorkCard from "@/components/work/WorkCard";
 import WorkOverview from "@/components/work/WorkOverview";
 import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
-import { useState, useEffect } from "react";
 import { getWork, getImage } from "@/api/work";
 import { createReview, getReviewByUserWork, updateReview } from "@/api/review";
 import { Textarea } from "@/components/ui/textarea";
-import { useParams } from "next/navigation";
 import { Work } from "@/types/work";
 import ReviewCard from "@/components/work/ReviewCard";
 import Rating from "@mui/material/Rating";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
+import { getMe } from "@/lib/auth";
+import { User } from "@/types/user";
+import ReviewSection from "@/components/review/review-section";
 
-export default function Page() {
-  const [work, setWork] = useState<Work>();
-  const { workOlid } = useParams<{ workOlid: string }>();
-  const { user } = useAuth();
-  const [review, setReview] = useState<
-    { rating: number; review_text: string; id: string } | undefined
-  >(undefined);
-  const [hasExistingReview, setHasExistingReview] = useState(false);
-
-  useEffect(() => {
-    const fetchWork = async () => {
-      try {
-        const response = await getWork(workOlid);
-        setWork(response.data);
-      } catch (error) {
-        toast("An error occurred while fetching the work data.");
-      }
-    };
-
-    fetchWork();
-  }, []);
-
-  useEffect(() => {
-    async function fetchUserReview() {
-      if (!work || !user) return;
-
-      try {
-        const response = await getReviewByUserWork(work.id, user.id);
-        if (!response || !response.data) throw new Error("No review found");
-        setReview({
-          rating: response.data.rating / 2,
-          review_text: response.data.review_text || "",
-          id: response.data.id,
-        });
-        console.log("response:", response);
-
-        setHasExistingReview(true);
-      } catch (error) {
-        setHasExistingReview(false);
-        setReview({ rating: 0, review_text: "", id: "" });
-      }
-    }
-    fetchUserReview();
-  }, [work, user]);
-
-  async function handleReviewSubmitClick(
-    e: React.MouseEvent<HTMLButtonElement>
-  ) {
-    e.preventDefault();
-    try {
-      if (review && work) {
-        if (!review.rating) {
-          toast("Choose a rating!");
-        } else {
-          const response = await createReview({
-            work_id: work?.id,
-            review_text: review.review_text,
-            rating: review.rating * 2,
-          });
-          toast("Review has been created successfully.");
-          setWork((prev) => {
-            if (prev) {
-              return {
-                ...prev,
-                reviews: [...(prev.reviews || []), response.data],
-              };
-            }
-            return prev;
-          });
-          setReview(undefined);
-        }
-      }
-    } catch (error) {
-      toast("An error occurred while submitting your review.");
-    }
-  }
-
-  if (!work) {
-    return (
-      <div className="text-black flex flex-col gap-10 bg-[#eae7da]">
-        <div className="flex justify-center items-center h-96">
-          <Spinner className="size-8" />
-        </div>
-      </div>
-    );
-  }
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ workOlid: string }>;
+}) {
+  const { workOlid } = await params;
+  const work: Work = (await getWork(workOlid)).data;
+  const user = getMe();
 
   return (
     <div className="text-black flex flex-col gap-10 pt-4 bg-[#eae7da]">
@@ -164,126 +85,14 @@ export default function Page() {
             </div>
           </div>
 
-          {user && !hasExistingReview && (
-            <div>
-              <h2 className="text-2xl font-semibold">What do you think?</h2>
-              <form className="mt-4 flex flex-col gap-2">
-                <div className="text-center">
-                  <Rating
-                    size="large"
-                    name="half-rating"
-                    precision={0.5}
-                    onChange={(e, value) => {
-                      setReview((prev) => ({
-                        review_text: prev?.review_text || "",
-                        rating: value || 0,
-                        id: prev?.id || "",
-                      }));
-                    }}
-                    value={review?.rating || 0}
-                  />
-                </div>
-
-                <Textarea
-                  placeholder="Leave a review"
-                  rows={4}
-                  className="border-gray-500 "
-                  onChange={(e) => {
-                    setReview({
-                      review_text: e.target.value,
-                      rating: review?.rating ?? 0,
-                      id: review?.id || "",
-                    });
-                  }}
-                  value={review?.review_text || ""}
-                ></Textarea>
-                <Button
-                  type="submit"
-                  onClick={handleReviewSubmitClick}
-                  disabled={!review || !review.review_text || !review.rating}
-                >
-                  Submit
-                </Button>
-              </form>
+          {/* Community Review */}
+          {work.reviews && work.reviews.length > 0 ? (
+            <ReviewSection reviews={work.reviews} />
+          ) : (
+            <div className="  text-gray-800">
+              <i>No reviews have been left for this work yet.</i>
             </div>
           )}
-          {/* User Review */}
-          <div>
-            <h2 className="text-2xl font-semibold">Community Reviews</h2>
-            <div className="flex flex-col gap-8 mt-4">
-              {hasExistingReview && user && review ? (
-                <ReviewCard
-                  key={user.id}
-                  userId={user.id}
-                  userAvatar={user.avatar_url || "/placeholder/user.png"}
-                  userDisplayName={user.display_name || user.username}
-                  createdAt={
-                    work.reviews?.find((r) => r.users.id === user.id)
-                      ?.created_at || new Date().toISOString()
-                  }
-                  reviewText={review.review_text || ""}
-                  rating={review.rating * 2}
-                  onChange={(rating: number, reviewText: string) => {
-                    setReview({
-                      rating: rating / 2,
-                      review_text: reviewText,
-                      id: review.id,
-                    });
-                  }}
-                  onUpdate={async (rating: number, reviewText: string) => {
-                    if (!review) return;
-                    try {
-                      const response = await updateReview(
-                        review.id,
-                        reviewText,
-                        rating
-                      );
-                      toast("Review has been updated successfully.");
-                      setReview({
-                        rating: response.data.rating / 2,
-                        review_text: response.data.review_text || "",
-                        id: response.data.id,
-                      });
-                      const workResponse = await getWork(workOlid);
-                      setWork(workResponse.data);
-                    } catch (error) {
-                      toast("An error occurred while updating your review.");
-                    }
-                  }}
-                />
-              ) : null}
-              {work.reviews && work.reviews.length > 0 && user ? (
-                work.reviews
-                  .filter((review) => review.users.id !== user.id)
-                  .map((review) => (
-                    <ReviewCard
-                      key={review.id}
-                      userId={review.users.id}
-                      userAvatar={
-                        review.users.avatar_url || "/placeholder/user.png"
-                      }
-                      userDisplayName={
-                        review.users.display_name || review.users.username
-                      }
-                      createdAt={review.created_at}
-                      reviewText={review.review_text || ""}
-                      rating={review.rating}
-                      onChange={(rating: number, reviewText: string) =>
-                        setReview({
-                          rating,
-                          review_text: reviewText,
-                          id: review.id,
-                        })
-                      }
-                    />
-                  ))
-              ) : (
-                <div className="  text-gray-800">
-                  <i>No reviews have been left for this work yet.</i>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </div>
