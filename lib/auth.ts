@@ -39,17 +39,26 @@ export const logout = async () => {
 
 export const getMe = cache(async (): Promise<User | null> => {
   const cookieStore = await cookies();
-  const tokenCookie = cookieStore.get("token");
+  const token = cookieStore.get("token");
 
-  if (!tokenCookie) return null;
+  if (!token) return null;
   try {
-    const res = await apiClient.get("/users/me", {
-      headers: {
-        Cookie: `token=${tokenCookie.value}`,
-      },
-      withCredentials: true,
-    });
-    return res.data;
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/me`,
+      {
+        headers: {
+          Cookie: `token=${token?.value}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    return result;
   } catch (err) {
     return null;
   }
