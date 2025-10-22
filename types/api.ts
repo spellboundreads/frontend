@@ -16,15 +16,21 @@ export interface GetAuthorResponse extends AxiosResponse {
   data: Author;
 }
 
-export interface GetAuthorWorkResponse extends AxiosResponse {
-  data: {
-    size: number;
-    entries: AuthorWorkEntry[];
-  };
-}
-
+export type GetAuthorWorkResponse =
+  | {
+      data: {
+        size: number;
+        entries: AuthorWorkEntry[];
+      };
+    }
+  | {
+      data: {
+        size: number;
+        entries: Work[];
+      };
+    };
 export interface SearchWorkResponse extends AxiosResponse {
-  data: { num_found: number; start: number; docs: SearchWorkEntry[] };
+  data: { num_found: number; start: number; docs: SearchWorkEntry[] | Work[] };
 }
 
 export interface SearchWorkEntry {
