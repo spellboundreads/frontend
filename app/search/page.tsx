@@ -11,11 +11,11 @@ async function SearchResults({
 }) {
   const works = await findWorks(searchParams);
   return (
-    <div className="w-3xl flex flex-col gap-8">
-      <div className="border-b border-gray-400 p-2">
-        {works && <p>There are {works.num_found} results</p>}
+    <div className="w-3xl flex flex-col gap-4">
+      <div className="text-sm p-2">
+        {works && <p>Found {works.num_found} works</p>}
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         {works &&
           works.docs.map((work: SearchWorkEntry, index: number) => {
             const authors =
