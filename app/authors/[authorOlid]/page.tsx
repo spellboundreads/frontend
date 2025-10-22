@@ -1,5 +1,7 @@
 import { getImage } from "@/api/work";
 import { getAuthor, getAuthorWorks } from "@/api/author";
+import { AuthorWorkEntry } from "@/types/author";
+import { Work } from "@/types/work";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +23,34 @@ export default async function Page({
   const author = (await getAuthor(authorOlid)).data;
   const authorWorks = (await getAuthorWorks(authorOlid)).data;
 
-  return author ? (
+  if (!author) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Spinner className="size-8" />
+      </div>
+    );
+  }
+
+  const entries = authorWorks.entries;
+  const isAuthorWorkEntries = entries.length > 0 && "key" in entries[0]; // runtime type guard
+
+  const normalizedWorks = isAuthorWorkEntries
+    ? (entries as AuthorWorkEntry[]).map((w) => ({
+        key: w.key.split("/").pop() || "",
+        title: w.title,
+        first_publish_year: w.first_publish_year,
+        covers: w.covers,
+        description: w.description,
+      }))
+    : (entries as Work[]).map((w) => ({
+        key: w.openlibrary_id,
+        title: w.title,
+        first_publish_year: w.first_publish_year,
+        covers: w.covers,
+        description: w.description,
+      }));
+
+  return (
     <div className="flex flex-col">
       <div className="w-full bg-[#eae7da]">
         <AuthorOverview
@@ -34,15 +63,15 @@ export default async function Page({
           }
         />
       </div>
-      {authorWorks ? (
+
+      {entries.length > 0 ? (
         <div className="px-24 flex py-8">
-          {/* Authors' works */}
           <div className="mx-16">
             <h2 className="text-2xl font-semibold w-full mb-4">
               Showing {author.name}'s works
             </h2>
             <div className="flex flex-col gap-4 max-w-4xl">
-              {authorWorks.entries
+              {normalizedWorks
                 .filter(
                   (work) =>
                     work.description && work.covers && work.covers.length > 0
@@ -50,8 +79,8 @@ export default async function Page({
                 .slice(0, 5)
                 .map((work) => (
                   <WorkCard
-                    key={work.key.split("/").pop()}
-                    work_key={work.key.split("/").pop() || ""}
+                    key={work.key}
+                    work_key={work.key}
                     title={work.title}
                     first_publish_year={work.first_publish_year}
                     cover={
@@ -59,9 +88,7 @@ export default async function Page({
                         ? getImage(work.covers[0].toString())
                         : undefined
                     }
-                    description={
-                      work.description ? work.description : undefined
-                    }
+                    description={work.description || undefined}
                   />
                 ))}
             </div>
@@ -72,10 +99,6 @@ export default async function Page({
           <Spinner className="size-8" />
         </div>
       )}
-    </div>
-  ) : (
-    <div className="flex items-center justify-center h-96">
-      <Spinner className="size-8" />
     </div>
   );
 }
@@ -88,7 +111,7 @@ type AuthorOverviewProps = {
 
 function AuthorOverview({ name, portrait, bio }: AuthorOverviewProps) {
   return (
-    <div className=" p-8 flex gap-12 min-h-xl max-w-5xl min-w-3xl mx-auto w-full">
+    <div className="p-8 flex gap-12 min-h-xl max-w-5xl min-w-3xl mx-auto w-full">
       <div className="h-42 w-42 flex-shrink-0">
         <img
           src={portrait || "/placeholder/author.png"}
@@ -113,7 +136,7 @@ function AuthorDescriptionDialog({ name, bio }: { name: string; bio: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="bg-transparent text-xs text-gray-700 underline black hover:underline w-fit text-left">
+        <button className="bg-transparent text-xs text-gray-700 underline hover:underline w-fit text-left">
           See full details
         </button>
       </DialogTrigger>
