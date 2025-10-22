@@ -36,7 +36,7 @@ export default function WorkCard({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Link href={`/works/${work_key}`} replace>
+        <Link href={`/works/${work_key}`} replace prefetch={false}>
           <div className="flex gap-2">
             <h2 className="text-sm font-semibold">{title}</h2>
             <p className="text-sm ">{first_publish_year}</p>
