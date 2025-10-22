@@ -5,8 +5,8 @@ import {
   DialogTrigger,
   DialogTitle,
   DialogHeader,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import { DialogDescription } from "@radix-ui/react-dialog";
 
 export default function LoginDialog() {
   return (
@@ -19,7 +19,7 @@ export default function LoginDialog() {
       <DialogContent className="flex flex-col items-center w-fit py-12 px-24">
         <DialogHeader>
           <DialogTitle className={`text-3xl text-center`}>Sign In</DialogTitle>
-          <DialogDescription className="text-center mt-2 mb-6">
+          <DialogDescription className="text-black text-center mt-2 mb-6">
             Welcome back! Enter your credentials to continue.
           </DialogDescription>
         </DialogHeader>

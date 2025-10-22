@@ -3,24 +3,24 @@ import { beVietnamPro } from "@/fonts";
 import "./globals.css";
 import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
+import { getMe } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "spellbound",
   description: "A platform for discovering and sharing literary works.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getMe();
   return (
     <html lang="en">
       <body className={`${beVietnamPro.variable} antialiased`}>
         <div className=" overflow-x-hidden relative ">
-          {/* <div className="fixed top-0 left-0 w-full z-50"> */}
-          <Header />
-          {/* </div> */}
+          <Header user={user || null} />
           <Toaster />
 
           <div>{children}</div>
