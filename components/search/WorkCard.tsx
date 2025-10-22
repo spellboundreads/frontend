@@ -26,7 +26,7 @@ export default function WorkCard({
   cover,
 }: WorkCardProps) {
   return (
-    <div className="flex gap-6 w-full h-56 text-black text-xs border-b-1 border-gray-400 p-4">
+    <div className="rounded-xs shadow-sm bg-[#f9f9f9] flex gap-6 w-full h-46 text-black text-xs  p-4">
       <div className="min-w-32 max-w-32 bg-white flex justify-center ">
         <img
           src={cover ? cover : "/placeholder/work.png"}
