@@ -34,7 +34,9 @@ function SubmitButton() {
     <button
       aria-disabled={pending}
       type="submit"
-      className="rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2"
+      className={`rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2 ${
+        pending ? "bg-gray-400 cursor-not-allowed" : "bg-black"
+      }`}
     >
       {pending ? "signing in..." : "sign in"}
     </button>
