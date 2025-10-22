@@ -1,95 +1,99 @@
 "use server";
-
+import {
+  LoginFormSchema,
+  LoginFormState,
+  RegisterFormState,
+} from "@/lib/definitions";
 import { cookies } from "next/headers";
 import apiClient from "@/lib/apiClient";
 import { revalidatePath } from "next/cache";
-import { AuthResponse } from "@/types/api";
+import { redirect } from "next/navigation";
 
-interface RegisterDto {
-  email: string;
-  username: string;
-  password: string;
-  display_name: string;
-}
+export async function login(state: LoginFormState, formData: FormData) {
+  const validateFields = LoginFormSchema.safeParse(
+    Object.fromEntries(formData)
+  );
 
-interface LoginDto {
-  email: string;
-  password: string;
-}
-
-export async function loginAction(data: LoginDto) {
-  try {
-    const response = await apiClient.post<AuthResponse["data"]>(
-      "/auth/login",
-      data
-    );
-
-    // The backend returns accessToken in the response
-    // We set it as an httpOnly cookie on the server side for security
-    if (response.data?.accessToken) {
-      const cookieStore = await cookies();
-      cookieStore.set("token", response.data.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-        path: "/",
-      });
-    }
-
-    // Revalidate the root layout to refresh all server components
-    // This ensures the Header component re-runs getMe() and shows the user dropdown
-    revalidatePath("/", "layout");
-
-    return { success: true, data: response.data };
-  } catch (error: any) {
+  if (!validateFields.success) {
     return {
-      success: false,
-      error: error.response?.data?.message || "Login failed",
-      statusCode: error.response?.data?.statusCode,
+      errors: validateFields.error.flatten().fieldErrors,
     };
+  }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.fromEntries(formData)),
+      credentials: "include",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    if (data.statusCode === 404) {
+      return {
+        message: "No users registered with this email",
+      };
+    } else {
+      return { message: await data.message };
+    }
+  }
+  const rawCookies = response.headers.get("set-cookie");
+  if (rawCookies) {
+    const cookieStore = await cookies();
+    cookieStore.set("token", rawCookies.split("=")[1].split(";")[0], {
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60,
+    });
+  }
+
+  return redirect("/");
+}
+
+export async function register(state: RegisterFormState, formData: FormData) {
+  const validateFields = LoginFormSchema.safeParse(
+    Object.fromEntries(formData)
+  );
+
+  if (!validateFields.success) {
+    return {
+      errors: validateFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.fromEntries(formData)),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    if (response.status === 409) {
+      return { errors: `This ${data.fields[0]} has already been taken.` };
+    } else {
+      return { errors: data.message };
+    }
+  } else {
+    return redirect("/");
   }
 }
 
-export async function registerAction(data: RegisterDto) {
-  try {
-    const response = await apiClient.post<AuthResponse["data"]>(
-      "/auth/register",
-      data
-    );
-
-    // If the API returns a token, set it as a cookie
-    if (response.data?.accessToken) {
-      const cookieStore = await cookies();
-      cookieStore.set("token", response.data.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-        path: "/",
-      });
-    }
-
-    // Revalidate all paths to refresh server components
-    revalidatePath("/", "layout");
-
-    return { success: true, data: response.data };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.response?.data?.message || "Registration failed",
-      statusCode: error.response?.data?.statusCode,
-    };
-  }
-}
-
-export async function logoutAction() {
+export async function logout() {
   try {
     const cookieStore = await cookies();
     const tokenCookie = cookieStore.get("token");
 
     if (tokenCookie) {
-      // Call backend logout endpoint
       await apiClient.post("/auth/logout", null, {
         headers: {
           Cookie: `token=${tokenCookie.value}`,
@@ -97,15 +101,12 @@ export async function logoutAction() {
       });
     }
 
-    // Delete the token cookie
     cookieStore.delete("token");
 
-    // Revalidate all paths to refresh server components
     revalidatePath("/", "layout");
 
     return { success: true };
   } catch (error: any) {
-    // Even if the API call fails, delete the cookie
     const cookieStore = await cookies();
     cookieStore.delete("token");
     revalidatePath("/", "layout");

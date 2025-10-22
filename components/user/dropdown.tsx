@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { logoutAction } from "@/app/actions/auth";
+import { logout } from "@/app/actions/auth";
 import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +19,7 @@ export default function UserDropdown({ user }: { user: User }) {
   async function handleLogout() {
     setIsLoggingOut(true);
     try {
-      await logoutAction();
+      await logout();
       toast.success("Logged out successfully");
       router.refresh();
     } catch (error) {

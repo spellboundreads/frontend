@@ -21,11 +21,13 @@ export default function RegisterDialog() {
           <DialogTitle className={`text-3xl text-center`}>
             Create an Account
           </DialogTitle>
-          <DialogDescription className="text-center mt-2 mb-6">
+          <DialogDescription className="text-black text-center mt-2 mb-6">
             Fill in the details to create your account.
           </DialogDescription>
         </DialogHeader>
-        <RegisterForm />
+        <div className=" flex flex-col  items-center">
+          <RegisterForm />
+        </div>
       </DialogContent>
     </Dialog>
   );
