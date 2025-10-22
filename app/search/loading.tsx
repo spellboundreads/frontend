@@ -34,9 +34,6 @@ export function WorkCardSkeleton() {
 export default function Loading() {
   return (
     <div className="w-3xl flex flex-col gap-8">
-      <div className="border-b border-gray-400 p-2">
-        <Skeleton className="h-5 w-32" />
-      </div>
       <div className="flex flex-col gap-4">
         {[...Array(10)].map((_, index) => (
           <WorkCardSkeleton key={index} />
