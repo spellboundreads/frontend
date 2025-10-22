@@ -52,7 +52,7 @@ export async function login(state: LoginFormState, formData: FormData) {
     });
   }
 
-  return redirect("/");
+  redirect("/");
 }
 
 export async function register(state: RegisterFormState, formData: FormData) {
@@ -84,7 +84,7 @@ export async function register(state: RegisterFormState, formData: FormData) {
       return { errors: data.message };
     }
   } else {
-    return redirect("/");
+    redirect("/");
   }
 }
 
