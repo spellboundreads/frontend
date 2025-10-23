@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import apiClient from "./apiClient";
+import { serverApiClient } from "./apiClient.server";
 import { AuthResponse } from "@/types/api";
 import { cache } from "react";
 import { User } from "@/types/user";
@@ -17,7 +17,7 @@ interface LoginDto {
 }
 
 export const register = async (data: RegisterDto): Promise<AuthResponse> => {
-  const response = await apiClient.post<AuthResponse["data"]>(
+  const response = await serverApiClient.post<AuthResponse["data"]>(
     "/auth/register",
     data
   );
@@ -25,7 +25,7 @@ export const register = async (data: RegisterDto): Promise<AuthResponse> => {
 };
 
 export const login = async (data: LoginDto): Promise<AuthResponse> => {
-  const response = await apiClient.post<AuthResponse["data"]>(
+  const response = await serverApiClient.post<AuthResponse["data"]>(
     "/auth/login",
     data
   );
@@ -33,7 +33,7 @@ export const login = async (data: LoginDto): Promise<AuthResponse> => {
 };
 
 export const logout = async () => {
-  const res = await apiClient.post("/auth/logout");
+  const res = await serverApiClient.post("/auth/logout");
   return res.data;
 };
 

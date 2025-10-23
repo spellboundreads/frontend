@@ -1,6 +1,7 @@
 import { Work } from "@/types/work";
 import { AxiosResponse } from "axios";
 import { Author, AuthorWorkEntry } from "@/types/author";
+import * as z from "zod";
 
 export interface AuthResponse extends AxiosResponse {
   data: {
@@ -37,3 +38,10 @@ export interface SearchWorkEntry {
   language?: string[];
   title: string;
 }
+
+export const ErrorResponseSchema = z.object({
+  message: z.string,
+  statusCode: z.string,
+});
+
+export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
