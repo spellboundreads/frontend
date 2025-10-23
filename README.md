@@ -16,4 +16,6 @@ npm run dev
 ```
 
 ## Deployment
-The frontend is deployed on [Vercel](https://vercel.com/). The features are still under active development.
+The frontend is deployed on [Vercel](https://spellboundreads.vercel.app/). The features are still under active development. Here's a peek:
+
+![spellbound landing page](./images/landing_page.png)

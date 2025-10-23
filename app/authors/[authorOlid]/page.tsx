@@ -32,7 +32,7 @@ export default async function Page({
   }
 
   const entries = authorWorks.entries;
-  const isAuthorWorkEntries = entries.length > 0 && "key" in entries[0]; // runtime type guard
+  const isAuthorWorkEntries = entries.length > 0 && "key" in entries[0];
 
   const normalizedWorks = isAuthorWorkEntries
     ? (entries as AuthorWorkEntry[]).map((w) => ({
