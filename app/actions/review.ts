@@ -2,9 +2,12 @@
 import {
   CreateReviewFormSchema,
   CreateReviewFormState,
+  EditReviewFormSchema,
+  EditReviewFormState,
 } from "@/lib/definitions";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { serverApiClient } from "@/lib/apiClient.server";
 
 export async function createReview(
   state: CreateReviewFormState,
@@ -51,5 +54,46 @@ export async function createReview(
     return { errors: data.message };
   } else {
     revalidatePath("/");
+  }
+}
+
+export async function editReview(
+  state: EditReviewFormState,
+  formData: FormData
+) {
+  const validateFields = EditReviewFormSchema.safeParse(
+    Object.fromEntries(formData)
+  );
+
+  if (!validateFields.success) {
+    return {
+      errors: validateFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const formDataEntries = Object.fromEntries(formData) as Record<
+    string,
+    string
+  >;
+
+  const reviewId = formData.get("review_id")!.valueOf();
+  try {
+    const review_text = formData.get("review_text")?.toString() || "";
+    const ratingStr = formData.get("rating")?.toString() || "0";
+    const rating = parseFloat(ratingStr);
+
+    const response = await serverApiClient.patch(`/reviews/${reviewId}`, {
+      review_text,
+      rating,
+    });
+
+    revalidatePath("/"); 
+
+    return { message: "Review updated successfully", data: response.data };
+  } catch (err: any) {
+    console.error("Edit review error:", err.response || err);
+    return {
+      errors: err.response?.data || err.message || "Failed to update review",
+    };
   }
 }
