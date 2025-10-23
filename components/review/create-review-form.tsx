@@ -1,75 +1,56 @@
 "use client";
 import Rating from "@mui/material/Rating";
 import { Textarea } from "../ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { CreateReviewPayload } from "@/types/review";
-import { toast } from "sonner";
-import { createReview } from "@/api/review";
-import { Review } from "@/types/review";
+import { useActionState } from "react";
+import { createReview } from "@/app/actions/review";
 
 interface CreateReviewFormProps {
   workId: string;
-  onSubmit: (review: Review) => void;
 }
 
-export default function CreateReviewForm({
-  workId,
-  onSubmit,
-}: CreateReviewFormProps) {
-  const [rating, setRating] = useState<number | null>(null);
-  const [reviewText, setReviewText] = useState<string>("");
-
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (rating && reviewText) {
-      try {
-        const formData: CreateReviewPayload = {
-          rating: rating * 2,
-          review_text: reviewText,
-          work_id: workId,
-        };
-        const response = await createReview(formData);
-        toast.success("Review submitted successfully!");
-        onSubmit(response.data);
-      } catch (error) {
-        toast.error("Failed to submit review. Please try again.");
-      }
-    }
-  };
-
+export default function CreateReviewForm({ workId }: CreateReviewFormProps) {
+  const [state, action, pending] = useActionState(createReview, undefined);
   return (
     <div>
       <h2 className="text-2xl font-semibold">What do you think?</h2>
-      <form className="mt-4 flex flex-col gap-2">
+      <form className="mt-4 flex flex-col gap-2" action={action}>
+        {state?.errors && (
+          <div className="text-red-500 text-sm text-center">
+            {typeof state.errors === "string" ? (
+              state.errors
+            ) : (
+              <ul>
+                {Object.entries(state.errors).map(([field, message]) => (
+                  <li key={field}>
+                    {field}: {String(message)}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
         <div className="text-center">
-          <Rating
-            size="large"
-            name="half-rating"
-            precision={0.5}
-            onChange={(_, value) => {
-              setRating(value);
-            }}
-            value={rating || 0}
-          />
+          <Rating size="large" name="rating" precision={0.5} />
         </div>
 
         <Textarea
           placeholder="Leave a review"
           rows={4}
           className="border-gray-500 "
-          onChange={(e) => {
-            setReviewText(e.target.value);
-          }}
-          value={reviewText || ""}
+          required
+          name="review_text"
         ></Textarea>
-        <Button
+        <input name="work_id" value={workId} readOnly className="hidden" />
+        <button
+          aria-disabled={pending}
           type="submit"
-          onClick={handleSubmit}
-          disabled={!reviewText || !rating}
+          className={`rounded-sm border p-2 text-white w-full font-semibold uppercase ${
+            pending ? "bg-gray-400 cursor-not-allowed" : "bg-black"
+          }`}
         >
-          Submit
-        </Button>
+          {pending ? "Submitting..." : "Submit"}
+        </button>
       </form>
     </div>
   );

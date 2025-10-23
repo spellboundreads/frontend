@@ -39,12 +39,7 @@ export default function ReviewSection({
 
   return (
     <>
-      {user && !currentUserReview && (
-        <CreateReviewForm
-          workId={workId}
-          onSubmit={(review) => setCurrentUserReview(review)}
-        />
-      )}
+      {user && !currentUserReview && <CreateReviewForm workId={workId} />}
       <div>
         <h2 className="text-2xl font-semibold">Community Reviews</h2>
         <div className="flex flex-col gap-8 mt-4">

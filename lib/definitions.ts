@@ -31,3 +31,20 @@ export type LoginFormState =
       message?: string;
     }
   | undefined;
+
+export type CreateReviewFormState =
+  | {
+      errors?: {
+        review_text: string[];
+        rating: string[];
+        work_id: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
+export const CreateReviewFormSchema = z.object({
+  work_id: z.string(),
+  review_text: z.string(),
+  rating: z.preprocess((val) => Number(val), z.number().min(1).max(5)),
+});
