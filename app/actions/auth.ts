@@ -5,7 +5,7 @@ import {
   RegisterFormState,
 } from "@/lib/definitions";
 import { cookies } from "next/headers";
-import apiClient from "@/lib/apiClient";
+import { serverApiClient } from "@/lib/apiClient.server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -94,7 +94,7 @@ export async function logout() {
     const tokenCookie = cookieStore.get("token");
 
     if (tokenCookie) {
-      await apiClient.post("/auth/logout", null, {
+      await serverApiClient.post("/auth/logout", null, {
         headers: {
           Cookie: `token=${tokenCookie.value}`,
         },

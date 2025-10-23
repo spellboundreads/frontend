@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import apiClient from "@/lib/apiClient";
+import apiClient from "@/lib/apiClient.server";
 
 export async function getMeServer() {
   const cookieStore = await cookies();

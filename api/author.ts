@@ -1,11 +1,11 @@
 import { GetAuthorResponse, GetAuthorWorkResponse } from "@/types/api";
 
-import apiClient from "@/lib/apiClient";
+import { serverApiClient } from "@/lib/apiClient.server";
 
 export const getAuthor = async (
   authorOlid: string
 ): Promise<GetAuthorResponse> => {
-  const response = await apiClient.get<GetAuthorResponse["data"]>(
+  const response = await serverApiClient.get<GetAuthorResponse["data"]>(
     `/authors/${authorOlid}`
   );
   return response;
@@ -14,7 +14,7 @@ export const getAuthor = async (
 export const getAuthorWorks = async (
   authorOlid: string
 ): Promise<GetAuthorWorkResponse> => {
-  const response = await apiClient.get<GetAuthorWorkResponse["data"]>(
+  const response = await serverApiClient.get<GetAuthorWorkResponse["data"]>(
     `/authors/${authorOlid}/works`
   );
   return response;
