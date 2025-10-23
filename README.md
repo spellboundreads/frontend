@@ -18,4 +18,6 @@ npm run dev
 ## Deployment
 The frontend is deployed on [Vercel](https://spellboundreads.vercel.app/). The features are still under active development. Here's a peek:
 
-![spellbound landing page](./images/landing_page.png)
+![spellbound landing page](./assets/images/landing_page.png)
+![spellbound work detail page](./assets/images/works.png)
+![spellbound author detail page](./assets/images/authors.png)
