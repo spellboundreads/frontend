@@ -54,13 +54,7 @@ export default function ReviewCard({ review, user }: ReviewCardProps) {
           </div>
           <div className="text-sm">{reviewText}</div>
           {user ? (
-            <EditReviewDialog
-              review={review}
-              onUpdate={(rating, reviewText) => {
-                setRating(rating);
-                setReviewText(reviewText);
-              }}
-            />
+            <EditReviewDialog review={review} />
           ) : (
             <button
               onClick={() => {}}
