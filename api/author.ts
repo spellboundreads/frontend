@@ -13,9 +13,14 @@ export const getAuthor = async (
 
 export const getAuthorWorks = async (
   authorOlid: string,
+  limit?: number,
+  offset?: number,
 ): Promise<GetAuthorsWorksResponse> => {
+  const query = new URLSearchParams();
+  if (limit) query.set("limit", limit.toString());
+  if (offset) query.set("offset", offset.toString());
   const response = await serverApiClient.get<GetAuthorsWorksResponse["data"]>(
-    `/authors/${authorOlid}/works`,
+    `/authors/${authorOlid}/works?${query.toString()}`,
   );
   return response;
 };
