@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AuthorsWorksSection from "@/components/author/authors-works-section";
-
 import WorkCard from "@/components/search/WorkCard";
 import { Spinner } from "@/components/ui/spinner";
 
