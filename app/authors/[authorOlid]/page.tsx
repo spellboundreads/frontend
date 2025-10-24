@@ -1,6 +1,5 @@
 import { getImage } from "@/api/work";
 import { getAuthor, getAuthorWorks } from "@/api/author";
-import { AuthorWorkEntry } from "@/types/author";
 import { Work } from "@/types/work";
 import {
   Dialog,
@@ -22,7 +21,6 @@ export default async function Page({
 }) {
   const { authorOlid } = await params;
   const author = (await getAuthor(authorOlid)).data;
-  const authorWorks = (await getAuthorWorks(authorOlid)).data;
 
   if (!author) {
     return (
