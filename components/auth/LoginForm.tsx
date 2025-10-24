@@ -13,7 +13,7 @@ export default function LoginForm() {
       {state?.message && <ErrorMessage message={state.message} />}
       <div className="flex flex-col gap-2">
         <Input label="Email" id="email" name="email" required />
-        {state?.errors?.email && <FieldError message={state.errors.email} />}
+        {state?.errors?.email && <FieldError message={state.errors.email[0]} />}
       </div>
       <Input
         label="password"

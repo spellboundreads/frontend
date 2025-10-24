@@ -13,7 +13,7 @@ export default function RegisterForm() {
 
       <div className="flex flex-col gap-2">
         <Input label="Email" type="email" id="email" name="email" required />
-        {state?.errors?.email && <FieldError message={state.errors.email} />}
+        {state?.errors?.email && <FieldError message={state.errors.email[0]} />}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -25,7 +25,7 @@ export default function RegisterForm() {
           required
         />
         {state?.errors?.username && (
-          <FieldError message={state.errors.username} />
+          <FieldError message={state.errors.username[0]} />
         )}
       </div>
 
@@ -38,7 +38,7 @@ export default function RegisterForm() {
           required
         />
         {state?.errors?.display_name && (
-          <FieldError message={state.errors.display_name} />
+          <FieldError message={state.errors.display_name[0]} />
         )}
       </div>
 
@@ -51,7 +51,7 @@ export default function RegisterForm() {
           required
         />
         {state?.errors?.password && (
-          <FieldError message={state.errors.password} />
+          <FieldError message={state.errors.password[0]} />
         )}
       </div>
       <button
