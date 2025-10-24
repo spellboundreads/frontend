@@ -17,7 +17,7 @@ export default async function AuthorsWorksSection({
         {entries.slice(0, 10).map((work) => (
           <WorkCard
             key={work.key}
-            work_key={work.key}
+            work_key={work.key.split("/").pop() || ""}
             title={work.title}
             first_publish_year={work.first_publish_year}
             cover={
