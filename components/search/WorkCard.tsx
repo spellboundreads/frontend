@@ -2,7 +2,7 @@ import Link from "next/link";
 
 interface WorkCardProps {
   title: string;
-  first_publish_year?: number;
+  first_publish_year: string | number | null;
   description?: string;
   authors?: {
     key: string;

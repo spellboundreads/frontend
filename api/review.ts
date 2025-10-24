@@ -1,4 +1,4 @@
-import apiClient from "@/lib/apiClient";
+import { serverApiClient } from "@/lib/apiClient.server";
 import {
   CreateReviewPayload,
   GetReviewByUserWorkResponse,
@@ -6,7 +6,7 @@ import {
 } from "@/types/review";
 
 export const createReview = async (payload: CreateReviewPayload) => {
-  const response = await apiClient.post("/reviews", payload);
+  const response = await serverApiClient.post("/reviews", payload);
   return response;
 };
 
@@ -14,10 +14,15 @@ export const getReviewByUserWork = async (
   workId: string,
   userId: string
 ): Promise<GetReviewByUserWorkResponse> => {
-  const response = await apiClient.get<GetReviewByUserWorkResponse["data"]>(
-    `/reviews/by-user-work/${userId}/${workId}`
-  );
-  return response;
+  try {
+    const response = await serverApiClient.get<
+      GetReviewByUserWorkResponse["data"]
+    >(`/reviews/by-user-work/${userId}/${workId}`);
+    return response;
+  } catch (err) {
+    console.log(err);
+    return { data: null };
+  }
 };
 
 export const updateReview = async (
@@ -25,7 +30,7 @@ export const updateReview = async (
   reviewText: string,
   rating: number
 ): Promise<UpdateReviewResponse> => {
-  const response = await apiClient.patch<UpdateReviewResponse["data"]>(
+  const response = await serverApiClient.patch<UpdateReviewResponse["data"]>(
     `/reviews/${reviewId}`,
     {
       review_text: reviewText,

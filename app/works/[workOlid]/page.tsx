@@ -2,10 +2,11 @@ import WorkCard from "@/components/work/WorkCard";
 import WorkOverview from "@/components/work/WorkOverview";
 import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
-import { getWork, getImage } from "@/api/work";
+import { getWork, getImage, getWorksReviews } from "@/api/work";
 import { Work } from "@/types/work";
 import { getMe } from "@/lib/auth";
 import ReviewSection from "@/components/review/review-section";
+import { WorksReviewsResponse } from "@/types/review";
 
 export default async function Page({
   params,
@@ -14,6 +15,7 @@ export default async function Page({
 }) {
   const { workOlid } = await params;
   const work: Work = (await getWork(workOlid)).data;
+  const reviews = await getWorksReviews(work.id, 10, 0);
   const user = await getMe();
 
   return (
@@ -80,7 +82,7 @@ export default async function Page({
           {/* Reviews */}
           {work.reviews && (
             <ReviewSection
-              reviews={work.reviews}
+              reviews={reviews.reviews}
               workId={work.id}
               user={user || null}
             />

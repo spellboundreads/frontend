@@ -1,12 +1,8 @@
-"use client";
-
 import { Review } from "@/types/review";
 import ReviewCard from "../work/ReviewCard";
 import CreateReviewForm from "./create-review-form";
-import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import { getReviewByUserWork } from "@/api/review";
-import { AxiosError } from "axios";
 
 interface ReviewSectionProps {
   reviews: Review[];
@@ -14,37 +10,18 @@ interface ReviewSectionProps {
   user: User | null;
 }
 
-export default function ReviewSection({
+export default async function ReviewSection({
   reviews,
   workId,
   user,
 }: ReviewSectionProps) {
-  const [currentUserReview, setCurrentUserReview] = useState<Review | null>();
-
-  useEffect(() => {
-    async function fetchCurrentUserReview() {
-      try {
-        if (user) {
-          const response = await getReviewByUserWork(workId, user.id);
-          setCurrentUserReview(response.data);
-        }
-      } catch (error: unknown) {
-        if (error instanceof AxiosError && error.status === 404) {
-          setCurrentUserReview(null);
-        }
-      }
-    }
-    fetchCurrentUserReview();
-  }, []);
+  const currentUserReview = user
+    ? (await getReviewByUserWork(workId, user.id)).data
+    : null;
 
   return (
     <>
-      {user && !currentUserReview && (
-        <CreateReviewForm
-          workId={workId}
-          onSubmit={(review) => setCurrentUserReview(review)}
-        />
-      )}
+      {user && !currentUserReview && <CreateReviewForm workId={workId} />}
       <div>
         <h2 className="text-2xl font-semibold">Community Reviews</h2>
         <div className="flex flex-col gap-8 mt-4">

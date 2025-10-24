@@ -1,90 +1,129 @@
 "use server";
-import {
-  LoginFormSchema,
-  LoginFormState,
-  RegisterFormState,
-} from "@/lib/definitions";
+import { LoginFormSchema, RegisterFormSchema } from "@/types/auth";
 import { cookies } from "next/headers";
-import apiClient from "@/lib/apiClient";
+import { serverApiClient } from "@/lib/apiClient.server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import * as z from "zod";
+import { isAxiosError } from "axios";
+
+export type LoginFormState =
+  | {
+      errors?: {
+        email?: string[];
+      };
+      message?: string[];
+    }
+  | undefined;
 
 export async function login(state: LoginFormState, formData: FormData) {
   const validateFields = LoginFormSchema.safeParse(
-    Object.fromEntries(formData)
+    Object.fromEntries(formData),
   );
 
   if (!validateFields.success) {
+    const flattenErrors = z.flattenError(validateFields.error);
     return {
-      errors: validateFields.error.flatten().fieldErrors,
+      errors: flattenErrors.fieldErrors,
     };
   }
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(formData)),
-      credentials: "include",
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    if (data.statusCode === 404) {
+  try {
+    const response = await serverApiClient.post(
+      `/auth/login`,
+      Object.fromEntries(formData),
+    );
+    const setCookieHeader = response.headers["set-cookie"];
+    if (!setCookieHeader) {
       return {
-        message: "No users registered with this email",
+        message: "An error occurred while logging in",
       };
-    } else {
-      return { message: await data.message };
     }
-  }
-  const rawCookies = response.headers.get("set-cookie");
-  if (rawCookies) {
+    const token = setCookieHeader
+      ?.find((c) => c.startsWith("token="))
+      ?.split("token=")[1]
+      ?.split(";")[0];
+    if (!token) {
+      return {
+        message: "An error occurred while logging in",
+      };
+    }
     const cookieStore = await cookies();
-    cookieStore.set("token", rawCookies.split("=")[1].split(";")[0], {
+    cookieStore.set("token", token, {
       httpOnly: true,
       path: "/",
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60,
     });
+    return redirect("/");
+    return;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          return {
+            message: "Can't find user with this email",
+          };
+        } else if (error.response.status === 401) {
+          return { message: "Password is incorrect" };
+        } else {
+          return { message: "An error occurred while logging in" };
+        }
+      } else if (error.request) {
+        return { message: error.request };
+      } else {
+        return { message: error.message };
+      }
+    }
   }
-
-  redirect("/");
 }
 
+export type RegisterFormState =
+  | {
+      errors?: {
+        username?: string[];
+        email?: string[];
+        password?: string[];
+        displayName?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
 export async function register(state: RegisterFormState, formData: FormData) {
-  const validateFields = LoginFormSchema.safeParse(
-    Object.fromEntries(formData)
+  const validateFields = RegisterFormSchema.safeParse(
+    Object.fromEntries(formData),
   );
 
   if (!validateFields.success) {
+    const flattenErrors = z.flattenError(validateFields.error);
     return {
-      errors: validateFields.error.flatten().fieldErrors,
+      errors: flattenErrors.fieldErrors,
     };
   }
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(formData)),
+  try {
+    const response = await serverApiClient.post(
+      `/auth/register`,
+      Object.fromEntries(formData),
+    );
+    return redirect("/");
+  } catch (error) {
+    if (isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 409) {
+          const field = error.response.data.fields?.[0];
+          return {
+            message: `This ${field} was already taken`,
+          };
+        } else {
+          return { message: error.response.data };
+        }
+      } else if (error.request) {
+        return { message: error.request };
+      } else {
+        return { message: error.message };
+      }
     }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    if (response.status === 409) {
-      return { errors: `This ${data.fields[0]} has already been taken.` };
-    } else {
-      return { errors: data.message };
-    }
-  } else {
-    redirect("/");
   }
 }
 
@@ -94,7 +133,7 @@ export async function logout() {
     const tokenCookie = cookieStore.get("token");
 
     if (tokenCookie) {
-      await apiClient.post("/auth/logout", null, {
+      await serverApiClient.post("/auth/logout", null, {
         headers: {
           Cookie: `token=${tokenCookie.value}`,
         },
@@ -110,7 +149,6 @@ export async function logout() {
     const cookieStore = await cookies();
     cookieStore.delete("token");
     revalidatePath("/", "layout");
-
     return { success: true };
   }
 }

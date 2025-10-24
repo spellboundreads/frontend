@@ -1,33 +1,33 @@
 import * as z from "zod";
 
-export const LoginFormSchema = z.object({
-  email: z.email({ error: "Please enter a valid email." }).trim(),
-  password: z.string(),
-});
-
-export const RegisterFormSchema = z.object({
-  username: z.string().trim(),
-  email: z.email({ error: "Please enter a valid email." }).trim(),
-  password: z.string(),
-});
-
-export type RegisterFormState =
+export type CreateReviewFormState =
   | {
       errors?: {
-        username?: string[];
-        email?: string[];
-        password?: string[];
+        review_text: string[];
+        rating: string[];
+        work_id: string[];
       };
       message?: string;
     }
   | undefined;
 
-export type LoginFormState =
+export const CreateReviewFormSchema = z.object({
+  work_id: z.string(),
+  review_text: z.string(),
+  rating: z.preprocess((val) => Number(val), z.number().min(1).max(5)),
+});
+
+export type EditReviewFormState =
   | {
       errors?: {
-        email?: string[];
-        password?: string[];
+        review_text?: string[];
+        rating?: string[];
       };
       message?: string;
     }
   | undefined;
+
+export const EditReviewFormSchema = z.object({
+  review_text: z.string(),
+  rating: z.preprocess((val) => Number(val), z.number().min(1).max(5)),
+});
