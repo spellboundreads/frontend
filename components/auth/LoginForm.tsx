@@ -1,9 +1,9 @@
 "use client";
 import Input from "@/components/Input";
+import { ErrorMessage, FieldError } from "@/components/form/error";
 import { login } from "@/app/actions/auth";
 import { useFormStatus } from "react-dom";
 import { useActionState } from "react";
-import { ErrorMessage, FieldError } from "@/components/form/error";
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined);
@@ -22,23 +22,15 @@ export default function LoginForm() {
         name="password"
         required
       />
-      <SubmitButton />
+      <button
+        aria-disabled={pending}
+        type="submit"
+        className={`rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2 ${
+          pending ? "bg-gray-400 cursor-not-allowed" : "bg-black"
+        }`}
+      >
+        {pending ? "signing in..." : "sign in"}
+      </button>
     </form>
-  );
-}
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      aria-disabled={pending}
-      type="submit"
-      className={`rounded-sm uppercase font-bold border p-2 bg-black text-white  text-center max-h-1/2 ${
-        pending ? "bg-gray-400 cursor-not-allowed" : "bg-black"
-      }`}
-    >
-      {pending ? "signing in..." : "sign in"}
-    </button>
   );
 }
