@@ -4,15 +4,20 @@ export const RegisterFormSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   username: z
     .string()
-    .min(2, "Username must be at least 2 characters long")
-    .max(32, "Username must be at most 32 characters long"),
+    .regex(
+      /^[a-zA-Z0-9_-]{3,16}$/,
+      "Username must be between 3 and 16 characters long and can only contain letters, numbers, underscores, and hyphens",
+    ),
   password: z
     .string()
     .regex(
-      `/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/`,
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
     ),
-  display_name: z.string().min(2).max(32),
+  display_name: z
+    .string()
+    .min(2, "Display name must be at least 2 characters long")
+    .max(32, "Display name must be at most 32 characters long"),
 });
 
 export const LoginFormSchema = z.object({
