@@ -3,17 +3,18 @@ import Input from "@/components/Input";
 import { login } from "@/app/actions/auth";
 import { useFormStatus } from "react-dom";
 import { useActionState } from "react";
+import { ErrorMessage, FieldError } from "@/components/form/error";
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined);
 
   return (
-    <form className="flex flex-col gap-4 items-center" action={action}>
-      {state?.message && (
-        <p className="text-red-500 text-sm text-center">{state.message}</p>
-      )}
-      <Input label="Email" type="email" id="email" name="email" required />
-
+    <form className="flex flex-col gap-4 " action={action}>
+      {state?.message && <ErrorMessage message={state.message} />}
+      <div className="flex flex-col gap-2">
+        <Input label="Email" id="email" name="email" required />
+        {state?.errors?.email && <FieldError message={state.errors.email} />}
+      </div>
       <Input
         label="password"
         type="password"
@@ -21,7 +22,6 @@ export default function LoginForm() {
         name="password"
         required
       />
-
       <SubmitButton />
     </form>
   );

@@ -1,63 +1,71 @@
 "use server";
 import {
-  LoginFormSchema,
-  LoginFormState,
   RegisterFormState,
 } from "@/lib/definitions";
+import { LoginFormSchema } from "@/types/auth";
 import { cookies } from "next/headers";
 import { serverApiClient } from "@/lib/apiClient.server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import * as z from "zod";
+
+export type LoginFormState =
+  | {
+      errors?: {
+        email?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
 
 export async function login(state: LoginFormState, formData: FormData) {
   const validateFields = LoginFormSchema.safeParse(
-    Object.fromEntries(formData)
+    Object.fromEntries(formData),
   );
 
   if (!validateFields.success) {
+    const flattenErrors = z.flattenError(validateFields.error);
     return {
-      errors: validateFields.error.flatten().fieldErrors,
+      errors: flattenErrors.fieldErrors,
     };
   }
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(formData)),
-      credentials: "include",
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    if (data.statusCode === 404) {
-      return {
-        message: "No users registered with this email",
-      };
-    } else {
-      return { message: await data.message };
-    }
-  }
-  const rawCookies = response.headers.get("set-cookie");
-  if (rawCookies) {
+  try {
+    const response = await serverApiClient.post(
+      `/auth/login`,
+      Object.fromEntries(formData),
+    );
+    const setCookieHeader = response.headers["set-cookie"];
+    console.log("cookieStore", setCookieHeader);
+    const token = setCookieHeader
+      ?.find((c) => c.startsWith("token="))
+      ?.split("token=")[1]
+      ?.split(";")[0];
     const cookieStore = await cookies();
-    cookieStore.set("token", rawCookies.split("=")[1].split(";")[0], {
+    cookieStore.set("token", token, {
       httpOnly: true,
       path: "/",
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60,
     });
+    redirect("/");
+  } catch (error) {
+    if (error.status === 404) {
+      return {
+        message: "No users registered with this email",
+      };
+    } else if (error.status === 401) {
+      return { message: "Password is incorrect" };
+    } else {
+      return { message: "An error occurred while logging in" };
+    }
   }
-
   redirect("/");
 }
 
 export async function register(state: RegisterFormState, formData: FormData) {
   const validateFields = LoginFormSchema.safeParse(
-    Object.fromEntries(formData)
+    Object.fromEntries(formData),
   );
 
   if (!validateFields.success) {
@@ -72,7 +80,7 @@ export async function register(state: RegisterFormState, formData: FormData) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(Object.fromEntries(formData)),
-    }
+    },
   );
 
   const data = await response.json();
