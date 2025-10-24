@@ -1,8 +1,5 @@
 "use server";
-import {
-  RegisterFormState,
-} from "@/lib/definitions";
-import { LoginFormSchema } from "@/types/auth";
+import { LoginFormSchema, RegisterFormSchema } from "@/types/auth";
 import { cookies } from "next/headers";
 import { serverApiClient } from "@/lib/apiClient.server";
 import { revalidatePath } from "next/cache";
@@ -36,7 +33,6 @@ export async function login(state: LoginFormState, formData: FormData) {
       Object.fromEntries(formData),
     );
     const setCookieHeader = response.headers["set-cookie"];
-    console.log("cookieStore", setCookieHeader);
     const token = setCookieHeader
       ?.find((c) => c.startsWith("token="))
       ?.split("token=")[1]
@@ -63,35 +59,37 @@ export async function login(state: LoginFormState, formData: FormData) {
   redirect("/");
 }
 
+export type RegisterFormState =
+  | {
+      errors?: {
+        username?: string;
+        email?: string;
+        password?: string;
+        displayName?: string;
+      };
+      message?: string;
+    }
+  | undefined;
+
 export async function register(state: RegisterFormState, formData: FormData) {
-  const validateFields = LoginFormSchema.safeParse(
+  const validateFields = RegisterFormSchema.safeParse(
     Object.fromEntries(formData),
   );
 
   if (!validateFields.success) {
+    const flattenErrors = z.flattenError(validateFields.error);
     return {
-      errors: validateFields.error.flatten().fieldErrors,
+      errors: flattenErrors.fieldErrors,
     };
   }
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(formData)),
-    },
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    if (response.status === 409) {
-      return { errors: `This ${data.fields[0]} has already been taken.` };
-    } else {
-      return { errors: data.message };
-    }
-  } else {
+  try {
+    const response = await serverApiClient.post(
+      `/auth/register`,
+      Object.fromEntries(formData),
+    );
+  } catch (error) {
+    return { message: error.message };
+  } finally {
     redirect("/");
   }
 }
