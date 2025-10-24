@@ -1,7 +1,6 @@
 import { Work } from "@/types/work";
 import { AxiosResponse } from "axios";
-import { Author, AuthorWorkEntry } from "@/types/author";
-import * as z from "zod";
+import { Author } from "@/types/author";
 
 export interface AuthResponse extends AxiosResponse {
   data: {
@@ -22,18 +21,11 @@ export interface SearchWorkEntry {
   author_name: string[];
   cover_i?: number;
   edition_count: number;
-  first_publish_year?: number;
+  first_publish_year: string | null;
   key: string;
   language?: string[];
   title: string;
 }
-
-export const ErrorResponseSchema = z.object({
-  message: z.string,
-  statusCode: z.string,
-});
-
-export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 
 export interface GetAuthorResponse extends AxiosResponse {
   data: Author;
@@ -44,6 +36,7 @@ interface AuthorsWork {
   key: string;
   description: string | null;
   covers: string[];
+  first_publish_year: string | null;
 }
 
 export interface GetAuthorsWorksResponse extends AxiosResponse {

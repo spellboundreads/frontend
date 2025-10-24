@@ -5,13 +5,14 @@ import { serverApiClient } from "@/lib/apiClient.server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import * as z from "zod";
+import { isAxiosError } from "axios";
 
 export type LoginFormState =
   | {
       errors?: {
         email?: string[];
       };
-      message?: string;
+      message?: string[];
     }
   | undefined;
 
@@ -33,10 +34,20 @@ export async function login(state: LoginFormState, formData: FormData) {
       Object.fromEntries(formData),
     );
     const setCookieHeader = response.headers["set-cookie"];
+    if (!setCookieHeader) {
+      return {
+        message: "An error occurred while logging in",
+      };
+    }
     const token = setCookieHeader
       ?.find((c) => c.startsWith("token="))
       ?.split("token=")[1]
       ?.split(";")[0];
+    if (!token) {
+      return {
+        message: "An error occurred while logging in",
+      };
+    }
     const cookieStore = await cookies();
     cookieStore.set("token", token, {
       httpOnly: true,
@@ -44,28 +55,36 @@ export async function login(state: LoginFormState, formData: FormData) {
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60,
     });
-    redirect("/");
+    return redirect("/");
+    return;
   } catch (error) {
-    if (error.status === 404) {
-      return {
-        message: "No users registered with this email",
-      };
-    } else if (error.status === 401) {
-      return { message: "Password is incorrect" };
-    } else {
-      return { message: "An error occurred while logging in" };
+    if (isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          return {
+            message: "Can't find user with this email",
+          };
+        } else if (error.response.status === 401) {
+          return { message: "Password is incorrect" };
+        } else {
+          return { message: "An error occurred while logging in" };
+        }
+      } else if (error.request) {
+        return { message: error.request };
+      } else {
+        return { message: error.message };
+      }
     }
   }
-  redirect("/");
 }
 
 export type RegisterFormState =
   | {
       errors?: {
-        username?: string;
-        email?: string;
-        password?: string;
-        displayName?: string;
+        username?: string[];
+        email?: string[];
+        password?: string[];
+        displayName?: string[];
       };
       message?: string;
     }
@@ -87,10 +106,24 @@ export async function register(state: RegisterFormState, formData: FormData) {
       `/auth/register`,
       Object.fromEntries(formData),
     );
+    return redirect("/");
   } catch (error) {
-    return { message: error.message };
-  } finally {
-    redirect("/");
+    if (isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 409) {
+          const field = error.response.data.fields?.[0];
+          return {
+            message: `This ${field} was already taken`,
+          };
+        } else {
+          return { message: error.response.data };
+        }
+      } else if (error.request) {
+        return { message: error.request };
+      } else {
+        return { message: error.message };
+      }
+    }
   }
 }
 
@@ -116,7 +149,6 @@ export async function logout() {
     const cookieStore = await cookies();
     cookieStore.delete("token");
     revalidatePath("/", "layout");
-
     return { success: true };
   }
 }

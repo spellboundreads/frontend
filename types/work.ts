@@ -8,12 +8,12 @@ export interface WorkAuthor {
   updated_at: string;
   authors: Author;
 }
-  
+
 export interface Work {
   id: string;
   openlibrary_id: string;
   title: string;
-  first_publish_year?: number;
+  first_publish_year: string | null;
   covers: string[] | null;
   description: string | null;
   excerpts: string[] | null;
