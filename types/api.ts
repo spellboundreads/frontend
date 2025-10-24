@@ -13,17 +13,6 @@ export interface GetWorkResponse extends AxiosResponse {
   data: Work;
 }
 
-export interface GetAuthorResponse extends AxiosResponse {
-  data: Author;
-}
-
-export interface GetAuthorWorkResponse extends AxiosResponse {
-  data: {
-    size: number;
-    entries: AuthorWorkEntry[] | Work[];
-  };
-}
-
 export interface SearchWorkResponse extends AxiosResponse {
   data: { num_found: number; start: number; docs: SearchWorkEntry[] | Work[] };
 }
@@ -45,3 +34,21 @@ export const ErrorResponseSchema = z.object({
 });
 
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+
+export interface GetAuthorResponse extends AxiosResponse {
+  data: Author;
+}
+
+interface AuthorsWork {
+  title: string;
+  key: string;
+  description: string | null;
+  covers: string[];
+}
+
+export interface GetAuthorsWorksResponse extends AxiosResponse {
+  data: {
+    size: number;
+    entries: AuthorsWork[];
+  };
+}
