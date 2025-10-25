@@ -7,14 +7,14 @@ import {
 } from "@/lib/definitions";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { serverApiClient } from "@/lib/apiClient.server";
+import { serverApi } from "@/lib/api.server";
 
 export async function createReview(
   state: CreateReviewFormState,
-  formData: FormData
+  formData: FormData,
 ) {
   const validateFields = CreateReviewFormSchema.safeParse(
-    Object.fromEntries(formData)
+    Object.fromEntries(formData),
   );
 
   if (!validateFields.success) {
@@ -59,10 +59,10 @@ export async function createReview(
 
 export async function editReview(
   state: EditReviewFormState,
-  formData: FormData
+  formData: FormData,
 ) {
   const validateFields = EditReviewFormSchema.safeParse(
-    Object.fromEntries(formData)
+    Object.fromEntries(formData),
   );
 
   if (!validateFields.success) {
@@ -82,12 +82,12 @@ export async function editReview(
     const ratingStr = formData.get("rating")?.toString() || "0";
     const rating = parseFloat(ratingStr);
 
-    const response = await serverApiClient.patch(`/reviews/${reviewId}`, {
+    const response = await serverApi.patch(`/reviews/${reviewId}`, {
       review_text,
       rating,
     });
 
-    revalidatePath("/"); 
+    revalidatePath("/");
 
     return { message: "Review updated successfully", data: response.data };
   } catch (err: any) {

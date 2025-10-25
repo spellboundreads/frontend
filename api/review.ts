@@ -1,4 +1,4 @@
-import { serverApiClient } from "@/lib/apiClient.server";
+import { serverApi } from "@/lib/api.server";
 import {
   CreateReviewPayload,
   GetReviewByUserWorkResponse,
@@ -6,7 +6,7 @@ import {
 } from "@/types/review";
 
 export const createReview = async (payload: CreateReviewPayload) => {
-  const response = await serverApiClient.post("/reviews", payload);
+  const response = await serverApi.post("/reviews", payload);
   return response;
 };
 
@@ -15,7 +15,7 @@ export const getReviewByUserWork = async (
   userId: string
 ): Promise<GetReviewByUserWorkResponse> => {
   try {
-    const response = await serverApiClient.get<
+    const response = await serverApi.get<
       GetReviewByUserWorkResponse["data"]
     >(`/reviews/by-user-work/${userId}/${workId}`);
     return response;
@@ -30,7 +30,7 @@ export const updateReview = async (
   reviewText: string,
   rating: number
 ): Promise<UpdateReviewResponse> => {
-  const response = await serverApiClient.patch<UpdateReviewResponse["data"]>(
+  const response = await serverApi.patch<UpdateReviewResponse["data"]>(
     `/reviews/${reviewId}`,
     {
       review_text: reviewText,

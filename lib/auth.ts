@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { serverApiClient } from "./apiClient.server";
+import { serverApi } from "./api.server";
 import { AuthResponse } from "@/types/api";
 import { cache } from "react";
 import { User } from "@/types/user";
@@ -17,23 +17,23 @@ interface LoginDto {
 }
 
 export const register = async (data: RegisterDto): Promise<AuthResponse> => {
-  const response = await serverApiClient.post<AuthResponse["data"]>(
+  const response = await serverApi.post<AuthResponse["data"]>(
     "/auth/register",
-    data
+    data,
   );
   return response;
 };
 
 export const login = async (data: LoginDto): Promise<AuthResponse> => {
-  const response = await serverApiClient.post<AuthResponse["data"]>(
+  const response = await serverApi.post<AuthResponse["data"]>(
     "/auth/login",
-    data
+    data,
   );
   return response;
 };
 
 export const logout = async () => {
-  const res = await serverApiClient.post("/auth/logout");
+  const res = await serverApi.post("/auth/logout");
   return res.data;
 };
 
@@ -49,7 +49,7 @@ export const getMe = cache(async (): Promise<User | null> => {
         headers: {
           Cookie: `token=${token?.value}`,
         },
-      }
+      },
     );
 
     if (!response.ok) {

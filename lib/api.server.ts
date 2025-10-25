@@ -1,11 +1,11 @@
 import axios from "axios";
 import { cookies } from "next/headers";
 
-export const serverApiClient = axios.create({
+export const serverApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
-serverApiClient.interceptors.request.use(async (config) => {
+serverApi.interceptors.request.use(async (config) => {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
   if (token) {

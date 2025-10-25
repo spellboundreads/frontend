@@ -1,8 +1,8 @@
-import { serverApiClient } from "@/lib/apiClient.server";
+import { serverApi } from "@/lib/api.server";
 import { AuthResponse } from "@/types/api";
 import * as z from "zod";
 
 export const logout = async () => {
-  const res = await serverApiClient.post("/auth/logout");
+  const res = await serverApi.post("/auth/logout");
   return res.data;
 };

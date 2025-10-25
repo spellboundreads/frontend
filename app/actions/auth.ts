@@ -1,7 +1,7 @@
 "use server";
 import { LoginFormSchema, RegisterFormSchema } from "@/types/auth";
 import { cookies } from "next/headers";
-import { serverApiClient } from "@/lib/apiClient.server";
+import { serverApi } from "@/lib/api.server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import * as z from "zod";
@@ -29,7 +29,7 @@ export async function login(state: LoginFormState, formData: FormData) {
   }
 
   try {
-    const response = await serverApiClient.post(
+    const response = await serverApi.post(
       `/auth/login`,
       Object.fromEntries(formData),
     );
@@ -102,7 +102,7 @@ export async function register(state: RegisterFormState, formData: FormData) {
     };
   }
   try {
-    const response = await serverApiClient.post(
+    const response = await serverApi.post(
       `/auth/register`,
       Object.fromEntries(formData),
     );
@@ -133,7 +133,7 @@ export async function logout() {
     const tokenCookie = cookieStore.get("token");
 
     if (tokenCookie) {
-      await serverApiClient.post("/auth/logout", null, {
+      await serverApi.post("/auth/logout", null, {
         headers: {
           Cookie: `token=${tokenCookie.value}`,
         },
