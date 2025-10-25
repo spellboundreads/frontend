@@ -31,7 +31,7 @@ export interface GetAuthorResponse extends AxiosResponse {
   data: Author;
 }
 
-interface AuthorsWork {
+export interface AuthorsWork {
   title: string;
   key: string;
   description: string | null;
