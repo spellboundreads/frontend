@@ -45,7 +45,7 @@ export default function AuthorsWorksSection({
 
   return (
     entries.length > 0 && (
-      <div className="flex flex-col gap-4 max-w-4xl">
+      <div className="flex flex-col gap-4 w-3xl">
         {entries.map((work) => (
           <WorkCard
             key={work.key}
