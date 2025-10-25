@@ -33,7 +33,7 @@ export default function AuthorsWorksSection({
       setData(response.data);
     };
     fetchData();
-  }, [offset]);
+  }, [authorOlid, offset]);
 
   const size = data?.size || 0;
   const entries = data?.entries || [];
