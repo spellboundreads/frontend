@@ -18,7 +18,7 @@ export default async function Page({
 }: {
   params: Promise<{ authorOlid: string }>;
 }) {
-  const { authorOlid } = params;
+  const { authorOlid } = await params;
   const author = (await getAuthor(authorOlid)).data;
 
   if (!author) {
