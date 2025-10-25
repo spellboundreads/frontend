@@ -1,13 +1,28 @@
+"use client";
 import { useActionState } from "react";
 import Rating from "@mui/material/Rating";
 import { Textarea } from "@/components/ui/textarea";
 import { Review } from "@/types/review";
 import { editReview } from "@/app/actions/review";
+import { useState, useEffect } from "react";
+import { FieldError, ErrorMessage } from "@/components/form/error";
+import { useRouter } from "next/navigation";
 
 export default function EditReviewForm({ review }: { review: Review }) {
   const [state, action, pending] = useActionState(editReview, undefined);
+
   return (
     <form action={action} className="flex flex-col px-2 gap-4">
+      {state?.message && state.message !== "Success" && (
+        <ErrorMessage message={state.message} />
+      )}
+      <input
+        type="text"
+        value={review.work_id}
+        name="work_id"
+        readOnly
+        className="hidden"
+      />
       <input
         type="text"
         value={review.id}
@@ -23,6 +38,9 @@ export default function EditReviewForm({ review }: { review: Review }) {
             precision={0.5}
             className="self-center"
           />
+          {state?.errors?.rating && (
+            <FieldError>{state.errors.rating[0]}</FieldError>
+          )}
         </div>
       </div>
       <div className=" flex flex-col gap-2">
@@ -32,6 +50,9 @@ export default function EditReviewForm({ review }: { review: Review }) {
           defaultValue={review.review_text}
           className="outline-gray-700"
         />
+        {state?.errors?.review_text && (
+          <FieldError>{state.errors.review_text.message[0]}</FieldError>
+        )}
       </div>
 
       <button

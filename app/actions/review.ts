@@ -3,11 +3,13 @@ import {
   CreateReviewFormSchema,
   CreateReviewFormState,
   EditReviewFormSchema,
-  EditReviewFormState,
 } from "@/lib/definitions";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { serverApi } from "@/lib/api.server";
+import { isAxiosError } from "axios";
+import * as z from "zod";
+import { redirect } from "next/navigation";
 
 export async function createReview(
   state: CreateReviewFormState,
@@ -57,6 +59,16 @@ export async function createReview(
   }
 }
 
+export type EditReviewFormState =
+  | {
+      errors?: {
+        review_text?: string[];
+        rating?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
 export async function editReview(
   state: EditReviewFormState,
   formData: FormData,
@@ -66,34 +78,35 @@ export async function editReview(
   );
 
   if (!validateFields.success) {
+    const flattenErrors = z.flattenError(validateFields.error);
     return {
-      errors: validateFields.error.flatten().fieldErrors,
+      errors: flattenErrors.fieldErrors,
     };
   }
 
-  const formDataEntries = Object.fromEntries(formData) as Record<
-    string,
-    string
-  >;
-
-  const reviewId = formData.get("review_id")!.valueOf();
   try {
     const review_text = formData.get("review_text")?.toString() || "";
-    const ratingStr = formData.get("rating")?.toString() || "0";
-    const rating = parseFloat(ratingStr);
+    const rating = formData.get("rating");
+    const reviewId = formData.get("review_id");
+    const workId = formData.get("work_id");
 
     const response = await serverApi.patch(`/reviews/${reviewId}`, {
       review_text,
-      rating,
+      rating: rating * 2,
     });
 
-    revalidatePath("/");
-
-    return { message: "Review updated successfully", data: response.data };
-  } catch (err: any) {
-    console.error("Edit review error:", err.response || err);
-    return {
-      errors: err.response?.data || err.message || "Failed to update review",
-    };
+    return { message: "Success" };
+  } catch (error) {
+    console.error("caught");
+    console.error(error);
+    if (isAxiosError(error)) {
+      if (error.response) {
+        return { message: error.response.data };
+      } else if (error.request) {
+        return { message: error.request };
+      } else {
+        return { message: error.message };
+      }
+    }
   }
 }

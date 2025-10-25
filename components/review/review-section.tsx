@@ -6,17 +6,15 @@ import { getReviewByUserWork } from "@/api/review";
 
 interface ReviewSectionProps {
   reviews: Review[];
-  workId: string;
   user: User | null;
 }
 
 export default async function ReviewSection({
   reviews,
-  workId,
   user,
 }: ReviewSectionProps) {
   const currentUserReview = user
-    ? (await getReviewByUserWork(workId, user.id)).data
+    ? (await getReviewByUserWork(reviews[0].work_id, user.id)).data
     : null;
 
   return (

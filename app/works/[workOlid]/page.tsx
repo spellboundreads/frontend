@@ -82,11 +82,7 @@ export default async function Page({
 
           {/* Reviews */}
           {work.reviews && (
-            <ReviewSection
-              reviews={reviews.reviews}
-              workId={work.id}
-              user={user || null}
-            />
+            <ReviewSection reviews={reviews.reviews} user={user || null} />
           )}
         </div>
       </div>

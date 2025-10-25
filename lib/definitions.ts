@@ -17,16 +17,6 @@ export const CreateReviewFormSchema = z.object({
   rating: z.preprocess((val) => Number(val), z.number().min(1).max(5)),
 });
 
-export type EditReviewFormState =
-  | {
-      errors?: {
-        review_text?: string[];
-        rating?: string[];
-      };
-      message?: string;
-    }
-  | undefined;
-
 export const EditReviewFormSchema = z.object({
   review_text: z.string(),
   rating: z.preprocess((val) => Number(val), z.number().min(1).max(5)),
