@@ -1,11 +1,11 @@
-import { serverApiClient } from "@/lib/apiClient.server";
+import { clientApi } from "@/lib/api";
 import { GetAuthorsWorksResponse } from "@/types/api";
 import { GetAuthorResponse } from "@/types/api";
 
 export const getAuthor = async (
   authorOlid: string,
 ): Promise<GetAuthorResponse> => {
-  const response = await serverApiClient.get<GetAuthorResponse["data"]>(
+  const response = await clientApi.get<GetAuthorResponse["data"]>(
     `/authors/${authorOlid}`,
   );
   return response;
@@ -19,7 +19,7 @@ export const getAuthorWorks = async (
   const query = new URLSearchParams();
   if (limit) query.set("limit", limit.toString());
   if (offset) query.set("offset", offset.toString());
-  const response = await serverApiClient.get<GetAuthorsWorksResponse["data"]>(
+  const response = await clientApi.get<GetAuthorsWorksResponse["data"]>(
     `/authors/${authorOlid}/works?${query.toString()}`,
   );
   return response;
