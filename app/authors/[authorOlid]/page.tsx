@@ -16,7 +16,7 @@ import { Spinner } from "@/components/ui/spinner";
 export default async function Page({
   params,
 }: {
-  params: { authorOlid: string };
+  params: Promise<{ authorOlid: string }>;
 }) {
   const { authorOlid } = params;
   const author = (await getAuthor(authorOlid)).data;
