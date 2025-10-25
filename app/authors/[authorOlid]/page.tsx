@@ -1,5 +1,5 @@
 import { getImage } from "@/api/work";
-import { getAuthor, getAuthorWorks } from "@/api/author";
+import { getAuthor } from "@/api/author";
 import { Work } from "@/types/work";
 import {
   Dialog,
