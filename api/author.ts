@@ -17,8 +17,8 @@ export const getAuthorWorks = async (
   offset?: number,
 ): Promise<GetAuthorsWorksResponse> => {
   const query = new URLSearchParams();
-  if (limit) query.set("limit", limit.toString());
-  if (offset) query.set("offset", offset.toString());
+  if (limit !== undefined) query.set("limit", limit.toString());
+  if (offset !== undefined) query.set("offset", offset.toString());
   const response = await clientApi.get<GetAuthorsWorksResponse["data"]>(
     `/authors/${authorOlid}/works?${query.toString()}`,
   );
