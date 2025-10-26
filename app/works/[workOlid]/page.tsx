@@ -88,6 +88,7 @@ export default async function Page({
           {/* Reviews */}
           {work.reviews && (
             <ReviewSection
+              workId={work.id}
               reviews={reviews.reviews}
               user={user || null}
               currentUserReview={currentUserReview}

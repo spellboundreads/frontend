@@ -8,18 +8,18 @@ interface ReviewSectionProps {
   reviews: Review[];
   user: User | null;
   currentUserReview?: Review | null;
+  workId: string;
 }
 
 export default async function ReviewSection({
   reviews,
   user,
   currentUserReview,
+  workId,
 }: ReviewSectionProps) {
   return (
     <>
-      {user && !currentUserReview && (
-        <CreateReviewForm workId={reviews[0].work_id} />
-      )}
+      {user && !currentUserReview && <CreateReviewForm workId={workId} />}
       <div>
         <h2 className="text-2xl font-semibold">Community Reviews</h2>
         <div className="flex flex-col gap-8 mt-4">
