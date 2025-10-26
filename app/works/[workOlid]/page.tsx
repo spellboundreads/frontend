@@ -19,7 +19,9 @@ export default async function Page({
   const work: Work = (await getWork(workOlid)).data;
   const reviews = await getWorksReviews(work.id, 10, 0);
   const user = await getMe();
-  const currentUserReview = (await getReviewByUserWork(user.id, work.id)).data;
+  const currentUserReview = user
+    ? (await getReviewByUserWork(user.id, work.id)).data
+    : null;
 
   return (
     <div className="text-black flex flex-col gap-10 pt-4 bg-[#eae7da]">
