@@ -50,7 +50,7 @@ export default function EditReviewForm({ review }: { review: Review }) {
             className="self-center"
           />
           {state?.errors?.rating && (
-            <FieldError>{state.errors.rating[0]}</FieldError>
+            <FieldError message={state.errors.rating[0]} />
           )}
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function EditReviewForm({ review }: { review: Review }) {
           className="outline-gray-700"
         />
         {state?.errors?.review_text && (
-          <FieldError>{state.errors.review_text.message[0]}</FieldError>
+          <FieldError message={state.errors.review_text[0]} />
         )}
       </div>
 
