@@ -7,7 +7,10 @@ import { Work } from "@/types/work";
 import { getMe } from "@/lib/auth";
 import ReviewSection from "@/components/review/review-section";
 import { WorksReviewsResponse } from "@/types/review";
+import AddToShelfDialog from "@/components/shelf/add-to-shelf-dialog";
 import { getReviewByUserWork } from "@/api/review.server";
+import ShelvesDropdown from "@/components/shelf/shelves-dropdown";
+import { getUserShelves } from "@/api/shelves.server";
 
 export default async function Page({
   params,
@@ -22,19 +25,28 @@ export default async function Page({
     ? (await getReviewByUserWork(user.id, work.id)).data
     : null;
 
+  const userShelves = user ? (await getUserShelves(user.id)).data.shelves : [];
+
   return (
     <div className="text-black flex flex-col gap-10 pt-4 bg-[#eae7da]">
       {/* Work Overview & Genres */}
       <div className="bg-[#eae7da] flex gap-4 lg:px-24 px-12">
         <div className="w-[20rem]">
-          <WorkCard
-            coverImage={
-              work.covers && work.covers.length > 0
-                ? getImage(work.covers[0])
-                : "/placeholder/work.png"
-            }
-            title={work.title}
-          />
+          {/* Work cover & Add to Shelf */}
+          <div className=" flex-col gap-5 items-center flex">
+            <div className="items-center flex flex-col justify-center ">
+              <img
+                src={
+                  work.covers && work.covers.length > 0
+                    ? getImage(work.covers[0])
+                    : "/placeholder/work.png"
+                }
+                alt={`Cover of ${work.title}`}
+                className="shadow-lg shadow-amber-50 h-98"
+              />
+            </div>
+            <AddToShelfDialog shelves={userShelves} workId={work.id} />
+          </div>
         </div>
         <div className="flex-1 flex flex-col p-4 gap-2">
           <WorkOverview
