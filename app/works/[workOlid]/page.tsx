@@ -8,6 +8,7 @@ import { Work } from "@/types/work";
 import { getMe } from "@/lib/auth";
 import ReviewSection from "@/components/review/review-section";
 import { WorksReviewsResponse } from "@/types/review";
+import { getReviewByUserWork } from "@/api/review.server";
 
 export default async function Page({
   params,
@@ -18,6 +19,7 @@ export default async function Page({
   const work: Work = (await getWork(workOlid)).data;
   const reviews = await getWorksReviews(work.id, 10, 0);
   const user = await getMe();
+  const currentUserReview = (await getReviewByUserWork(user.id, work.id)).data;
 
   return (
     <div className="text-black flex flex-col gap-10 pt-4 bg-[#eae7da]">
@@ -54,8 +56,8 @@ export default async function Page({
       {/* Work Details */}
 
       <div className="bg-[#F8F5EA] flex lg:flex-row flex-col lg:gap-36 gap-8 pl-24 pr-92 py-8">
-        {/* Description and author */}
         <div className="min-w-xl flex flex-col gap-8">
+          {/* Description */}
           <div className="flex flex-col gap-2">
             <h2 className="font-bold text-2xl">Description</h2>
             <div className="text-sm">
@@ -64,6 +66,7 @@ export default async function Page({
               )}
             </div>
           </div>
+          {/* Author */}
           <div className="flex flex-col gap-2">
             <h2 className="font-bold text-2xl">About the Author</h2>
             <div>
@@ -82,7 +85,11 @@ export default async function Page({
 
           {/* Reviews */}
           {work.reviews && (
-            <ReviewSection reviews={reviews.reviews} user={user || null} />
+            <ReviewSection
+              reviews={reviews.reviews}
+              user={user || null}
+              currentUserReview={currentUserReview}
+            />
           )}
         </div>
       </div>

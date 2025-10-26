@@ -6,15 +6,26 @@ import { Review } from "@/types/review";
 import { editReview } from "@/app/actions/review";
 import { useState, useEffect } from "react";
 import { FieldError, ErrorMessage } from "@/components/form/error";
+import { SuccessMessage } from "@/components/form/success";
 import { useRouter } from "next/navigation";
 
 export default function EditReviewForm({ review }: { review: Review }) {
   const [state, action, pending] = useActionState(editReview, undefined);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state?.message === "Success") {
+      router.refresh();
+    }
+  }, [state, review.work_id, router]);
 
   return (
-    <form action={action} className="flex flex-col px-2 gap-4">
+    <form action={action} className="flex flex-col gap-4">
       {state?.message && state.message !== "Success" && (
         <ErrorMessage message={state.message} />
+      )}
+      {state?.message === "Success" && (
+        <SuccessMessage message={"Your review has been updated."} />
       )}
       <input
         type="text"
