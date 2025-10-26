@@ -1,4 +1,3 @@
-import WorkCard from "@/components/work/WorkCard";
 import WorkOverview from "@/components/work/WorkOverview";
 import WorkSubjects from "@/components/work/WorkSubjects";
 import AuthorCard from "@/components/work/AuthorCard";
