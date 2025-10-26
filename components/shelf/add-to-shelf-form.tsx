@@ -36,14 +36,23 @@ export default function AddToShelfForm({
 
       <input type="hidden" name="work_id" value={workId} />
       {shelves.map((shelf) => (
-        <div key={shelf.id} className="flex space-x-4">
+        <div key={shelf.id} className="flex gap-4 items-start">
           <Checkbox
             defaultChecked={shelvesWithWorkIds.includes(shelf.id)}
             id={shelf.id}
             name={shelf.id}
-            className="text-lg"
+            className="text-lg mt-1"
           />
-          <Label htmlFor={shelf.id}>{shelf.name}</Label>
+          <div>
+            <Label htmlFor={shelf.id} className="font-semibold">
+              {shelf.name}
+            </Label>
+            <p className="text-gray-700 text-xs">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+              elementum, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget
+              aliquam nisl nisl eget nisl.
+            </p>
+          </div>
         </div>
       ))}
       <button
