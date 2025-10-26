@@ -97,8 +97,6 @@ export async function editReview(
 
     return { message: "Success" };
   } catch (error) {
-    console.error("caught");
-    console.error(error);
     if (isAxiosError(error)) {
       if (error.response) {
         return { message: error.response.data };
