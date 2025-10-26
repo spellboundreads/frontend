@@ -2,23 +2,21 @@ import { Review } from "@/types/review";
 import ReviewCard from "../work/ReviewCard";
 import CreateReviewForm from "./create-review-form";
 import { User } from "@/types/user";
-import { getReviewByUserWork } from "@/api/review";
+import { getReviewByUserWork } from "@/api/review.server";
 
 interface ReviewSectionProps {
   reviews: Review[];
-  workId: string;
   user: User | null;
+  currentUserReview?: Review | null;
+  workId: string;
 }
 
 export default async function ReviewSection({
   reviews,
-  workId,
   user,
+  currentUserReview,
+  workId,
 }: ReviewSectionProps) {
-  const currentUserReview = user
-    ? (await getReviewByUserWork(workId, user.id)).data
-    : null;
-
   return (
     <>
       {user && !currentUserReview && <CreateReviewForm workId={workId} />}

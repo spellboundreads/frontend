@@ -1,4 +1,5 @@
 import { serverApi } from "@/lib/api.server";
+
 import {
   CreateReviewPayload,
   GetReviewByUserWorkResponse,
@@ -11,13 +12,13 @@ export const createReview = async (payload: CreateReviewPayload) => {
 };
 
 export const getReviewByUserWork = async (
+  userId: string,
   workId: string,
-  userId: string
 ): Promise<GetReviewByUserWorkResponse> => {
   try {
-    const response = await serverApi.get<
-      GetReviewByUserWorkResponse["data"]
-    >(`/reviews/by-user-work/${userId}/${workId}`);
+    const response = await serverApi.get<GetReviewByUserWorkResponse["data"]>(
+      `/reviews/by-user-work/${userId}/${workId}`,
+    );
     return response;
   } catch (err) {
     console.log(err);
@@ -28,14 +29,14 @@ export const getReviewByUserWork = async (
 export const updateReview = async (
   reviewId: string,
   reviewText: string,
-  rating: number
+  rating: number,
 ): Promise<UpdateReviewResponse> => {
   const response = await serverApi.patch<UpdateReviewResponse["data"]>(
     `/reviews/${reviewId}`,
     {
       review_text: reviewText,
       rating,
-    }
+    },
   );
   return response;
 };

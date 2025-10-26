@@ -26,7 +26,17 @@ export function EditReviewDialog({ review }: { review: Review }) {
           </DialogTitle>
         </DialogHeader>
         <EditReviewForm review={review} />
-        <DialogFooter className="flex gap-2 justify-center"></DialogFooter>
+        <DialogFooter className="flex gap-2 justify-center">
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-sm border p-2 w-full font-semibold uppercase"
+            >
+              Cancel
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
