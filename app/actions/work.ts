@@ -22,30 +22,24 @@ export async function addToShelves(
     (key) => key !== "work_id",
   );
 
-  if (!shelfIds.length) {
-    return {
-      errors: {
-        shelf_ids: ["Please select at least one shelf"],
-      },
-    };
-  }
-
   const workId = formData.get("work_id");
   try {
     const response = await serverApi.post(`/works/${workId}/shelves`, {
       shelf_ids: shelfIds,
     });
+    return {
+      message: "Success",
+    };
   } catch (error) {
+    console.error(error);
     if (isAxiosError(error)) {
       if (error.response) {
-        return { message: error.response.data };
+        return { message: "Something wrong with the response" };
       } else if (error.request) {
-        return { message: error.request };
+        return { message: "Something wrong with the request" };
       } else {
-        return { message: error.message };
+        return { message: "Something went wrong" };
       }
-    } else {
-      return { message: "Something went wrong" };
     }
   }
 }
