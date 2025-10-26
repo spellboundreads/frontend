@@ -92,7 +92,7 @@ export async function editReview(
 
     const response = await serverApi.patch(`/reviews/${reviewId}`, {
       review_text,
-      rating: rating * 2,
+      rating: Number(rating) * 2,
     });
 
     return { message: "Success" };
