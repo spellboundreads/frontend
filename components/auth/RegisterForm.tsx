@@ -1,8 +1,9 @@
 "use client";
 import Input from "@/components/Input";
 import { FieldError, ErrorMessage } from "@/components/form/error";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { register } from "@/app/actions/auth";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
   const [state, action, pending] = useActionState(register, undefined);
