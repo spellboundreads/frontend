@@ -94,16 +94,16 @@ export async function editReview(
       review_text,
       rating: Number(rating) * 2,
     });
-
     return { message: "Success" };
   } catch (error) {
+    console.error(error);
     if (isAxiosError(error)) {
       if (error.response) {
-        return { message: error.response.data };
+        return { message: "Something wrong with the response" };
       } else if (error.request) {
-        return { message: error.request };
+        return { message: "Something wrong with the request" };
       } else {
-        return { message: error.message };
+        return { message: "Something went wrong" };
       }
     }
   }

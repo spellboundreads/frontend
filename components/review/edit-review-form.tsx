@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { FieldError, ErrorMessage } from "@/components/form/error";
 import { SuccessMessage } from "@/components/form/success";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function EditReviewForm({ review }: { review: Review }) {
   const [state, action, pending] = useActionState(editReview, undefined);
@@ -15,18 +16,17 @@ export default function EditReviewForm({ review }: { review: Review }) {
 
   useEffect(() => {
     if (state?.message === "Success") {
-      router.refresh();
+      toast.success("Your review has been updated.");
+      window.location.reload();
     }
-  }, [state, review.work_id, router]);
+  }, [state]);
 
   return (
     <form action={action} className="flex flex-col gap-4">
       {state?.message && state.message !== "Success" && (
         <ErrorMessage message={state.message} />
       )}
-      {state?.message === "Success" && (
-        <SuccessMessage message={"Your review has been updated."} />
-      )}
+
       <input
         type="text"
         value={review.work_id}

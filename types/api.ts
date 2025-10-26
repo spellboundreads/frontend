@@ -1,6 +1,7 @@
 import { Work } from "@/types/work";
 import { AxiosResponse } from "axios";
 import { Author } from "@/types/author";
+import { Shelf } from "@/types/shelf";
 
 export interface AuthResponse extends AxiosResponse {
   data: {
@@ -44,4 +45,23 @@ export interface GetAuthorsWorksResponse extends AxiosResponse {
     size: number;
     entries: AuthorsWork[];
   };
+}
+
+export interface CreateShelfResponse {
+  data: Shelf;
+}
+
+export interface GetUserShelvesResponse extends AxiosResponse {
+  data: {
+    num_found: number;
+    shelves: Shelf[] | null;
+  };
+}
+
+export interface GetShelvesWithWorkResponse extends AxiosResponse {
+  data: Shelf[] | null;
+}
+
+export interface AddWorkToShelfResponse extends AxiosResponse {
+  data: Shelf | null;
 }

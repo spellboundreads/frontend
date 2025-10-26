@@ -21,7 +21,6 @@ export const getReviewByUserWork = async (
     );
     return response;
   } catch (err) {
-    console.log(err);
     return { data: null };
   }
 };
