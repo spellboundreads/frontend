@@ -50,3 +50,7 @@ export interface GetAuthorsWorksResponse extends AxiosResponse {
 export interface CreateShelfResponse {
   data: Shelf;
 }
+
+export interface GetShelvesWithWorkResponse {
+  data: Shelf[];
+}

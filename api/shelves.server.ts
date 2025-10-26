@@ -1,5 +1,5 @@
 import { serverApi } from "@/lib/api.server";
-import { CreateShelfResponse } from "@/types/api";
+import { CreateShelfResponse, GetShelvesWithWorkResponse } from "@/types/api";
 
 export const createShelf = async (
   name: string,
@@ -38,7 +38,7 @@ export const getUserShelves = async (
   }
 };
 
-export const addWorkToShelf = async (
+export const addWorksToShelf = async (
   shelfId: string,
   workId: string[],
 ): Promise<AddWorkToShelfResponse> => {
@@ -49,6 +49,23 @@ export const addWorkToShelf = async (
         workIds,
       },
     );
+    return response;
+  } catch (err) {
+    return {
+      data: null,
+    };
+  }
+};
+
+export const getShelvesWithWork = async (
+  userId: string,
+  workId: string,
+): Promise<GetShelvesWithWorkResponse> => {
+  try {
+    const response = await serverApi.get<GetShelvesWithWorkResponse["data"]>(
+      `/users/${userId}/shelves?work_id=${workId}`,
+    );
+
     return response;
   } catch (err) {
     return {
