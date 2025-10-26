@@ -14,11 +14,11 @@ export default function AddToShelfForm({
   workId,
   shelvesWithWork,
 }: {
-  shelves: Shelf[];
+  shelves: Shelf[] | null;
   workId: string;
-  shelvesWithWork: Shelf[];
+  shelvesWithWork: Shelf[] | null;
 }) {
-  const shelvesWithWorkIds = shelvesWithWork.map((shelf) => shelf.id);
+  const shelvesWithWorkIds = shelvesWithWork?.map((shelf) => shelf.id) ?? [];
   const [state, action, pending] = useActionState(addToShelves, undefined);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function AddToShelfForm({
       )}
 
       <input type="hidden" name="work_id" value={workId} />
-      {shelves.map((shelf) => (
+      {shelves?.map((shelf) => (
         <div key={shelf.id} className="flex gap-4 items-start">
           <Checkbox
             defaultChecked={shelvesWithWorkIds.includes(shelf.id)}

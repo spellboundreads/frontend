@@ -9,7 +9,6 @@ import ReviewSection from "@/components/review/review-section";
 import { WorksReviewsResponse } from "@/types/review";
 import AddToShelfDialog from "@/components/shelf/add-to-shelf-dialog";
 import { getReviewByUserWork } from "@/api/review.server";
-import ShelvesDropdown from "@/components/shelf/shelves-dropdown";
 import { getUserShelves, getShelvesWithWork } from "@/api/shelves.server";
 
 export default async function Page({

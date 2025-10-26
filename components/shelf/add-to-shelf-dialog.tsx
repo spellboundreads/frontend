@@ -14,9 +14,9 @@ export default function AddToShelfDialog({
   workId,
   shelvesWithWork,
 }: {
-  shelves: Shelf[];
+  shelves: Shelf[] | null;
   workId: string;
-  shelvesWithWork: boolean;
+  shelvesWithWork: Shelf[] | null;
 }) {
   return (
     <Dialog>
