@@ -18,7 +18,7 @@ export default async function Page({
 }) {
   const { workOlid } = await params;
   const work: Work = (await getWork(workOlid)).data;
-  const reviews = await getWorksReviews(work.id, 10, 0);
+  const reviews = (await getWorksReviews(work.id, 10, 0)).data;
   const user = await getMe();
   const currentUserReview = user
     ? (await getReviewByUserWork(user.id, work.id)).data
