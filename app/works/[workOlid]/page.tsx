@@ -10,7 +10,7 @@ import { WorksReviewsResponse } from "@/types/review";
 import AddToShelfDialog from "@/components/shelf/add-to-shelf-dialog";
 import { getReviewByUserWork } from "@/api/review.server";
 import ShelvesDropdown from "@/components/shelf/shelves-dropdown";
-import { getUserShelves } from "@/api/shelves.server";
+import { getUserShelves, getShelvesWithWork } from "@/api/shelves.server";
 
 export default async function Page({
   params,
@@ -26,6 +26,9 @@ export default async function Page({
     : null;
 
   const userShelves = user ? (await getUserShelves(user.id)).data.shelves : [];
+  const shelvesWithWork = user
+    ? (await getShelvesWithWork(user.id, work.id)).data
+    : [];
 
   return (
     <div className="text-black flex flex-col gap-10 pt-4 bg-[#eae7da]">
@@ -45,7 +48,11 @@ export default async function Page({
                 className="shadow-lg shadow-amber-50 h-98"
               />
             </div>
-            <AddToShelfDialog shelves={userShelves} workId={work.id} />
+            <AddToShelfDialog
+              shelves={userShelves}
+              workId={work.id}
+              shelvesWithWork={shelvesWithWork}
+            />
           </div>
         </div>
         <div className="flex-1 flex flex-col p-4 gap-2">

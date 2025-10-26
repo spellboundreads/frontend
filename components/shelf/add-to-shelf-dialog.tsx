@@ -9,7 +9,15 @@ import {
 import { Shelf } from "@/types/shelf";
 import AddToShelfForm from "@/components/shelf/add-to-shelf-form";
 
-export default function AddToShelfDialog({ shelves, workId }: { shelves: Shelf[]; workId: string }) {
+export default function AddToShelfDialog({
+  shelves,
+  workId,
+  shelvesWithWork,
+}: {
+  shelves: Shelf[];
+  workId: string;
+  shelvesWithWork: boolean;
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -27,7 +35,11 @@ export default function AddToShelfDialog({ shelves, workId }: { shelves: Shelf[]
           </DialogDescription>
         </DialogHeader>
         <div className=" flex flex-col  items-center">
-          <AddToShelfForm shelves={shelves} workId={workId} />
+          <AddToShelfForm
+            shelves={shelves}
+            workId={workId}
+            shelvesWithWork={shelvesWithWork}
+          />
         </div>
       </DialogContent>
     </Dialog>
