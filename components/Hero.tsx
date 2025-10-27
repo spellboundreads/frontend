@@ -1,4 +1,5 @@
 import BookCard, { BookCardProps } from "@/components/BookCard";
+import Link from "next/link";
 
 export type HeroProps = {
   headline: string;
@@ -12,7 +13,7 @@ export default function Hero({
   headline,
   description,
   ctaText = "Explore now",
-  ctaLink = "#",
+  ctaLink = "/works/",
   cards = [
     {
       title: "The Great Gatsby",
