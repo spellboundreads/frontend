@@ -13,15 +13,3 @@ export const getWorksReviews = async (
   );
   return response;
 };
-
-interface GetNewlyAddedWorksResponse extends AxiosResponse {
-  data: Work[];
-}
-
-interface GetMostReviewedWorksResponse extends AxiosResponse {
-  data: Work[];
-}
-
-interface GetMostShelvedWorksResponse extends AxiosResponse {
-  data: Work[];
-}

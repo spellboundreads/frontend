@@ -1,3 +1,16 @@
+import { Review } from "@/types/review";
+import ReviewCard from "../work/ReviewCard";
+import CreateReviewForm from "./create-review-form";
+import { User } from "@/types/user";
+import { getReviewByUserWork } from "@/api/review.server";
+
+interface ReviewSectionProps {
+  reviews: Review[] | null;
+  user: User | null;
+  currentUserReview: Review | null;
+  workId: string;
+}
+
 export default async function ReviewSection({
   reviews,
   user,
@@ -19,7 +32,7 @@ export default async function ReviewSection({
               {currentUserReview && (
                 <ReviewCard review={currentUserReview} user={user} />
               )}
-              {reviews.length > 0 ? (
+              {reviews && reviews.length > 0 ? (
                 reviews.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))

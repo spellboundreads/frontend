@@ -108,7 +108,7 @@ export default async function Page({
 
           <ReviewSection
             workId={work.id}
-            reviews={reviews?.reviews}
+            reviews={reviews ? reviews.reviews : null}
             user={user || null}
             currentUserReview={currentUserReview}
           />
