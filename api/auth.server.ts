@@ -6,8 +6,12 @@ export async function getMeServer() {
   const tokenCookie = cookieStore.get("token");
   const cookieHeader = tokenCookie ? `token=${tokenCookie.value}` : "";
 
-  const res = await serverApi.get("/users/me", {
-    headers: { Cookie: cookieHeader },
-  });
-  return res.data;
+  if (cookieHeader) {
+    const res = await serverApi.get("/users/me", {
+      headers: { Cookie: cookieHeader },
+    });
+    return res.data;
+  } else {
+    return null;
+  }
 }

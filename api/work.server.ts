@@ -25,30 +25,3 @@ interface GetMostReviewedWorksResponse extends AxiosResponse {
 interface GetMostShelvedWorksResponse extends AxiosResponse {
   data: Work[];
 }
-
-export const getNewlyAddedWorks =
-  async (): Promise<GetNewlyAddedWorksResponse> => {
-    const response =
-      await serverApi.get<GetNewlyAddedWorksResponse["data"]>(
-        `/works/newly-added`,
-      );
-    return response;
-  };
-
-export const getMostReviewedWorks =
-  async (): Promise<GetMostReviewedWorksResponse> => {
-    const response =
-      await serverApi.get<GetMostReviewedWorksResponse["data"]>(
-        `/works/most-reviewed`,
-      );
-    return response;
-  };
-
-export const getMostShelvedWorks =
-  async (): Promise<GetMostShelvedWorksResponse> => {
-    const response =
-      await serverApi.get<GetMostShelvedWorksResponse["data"]>(
-        `/works/most-shelved`,
-      );
-    return response;
-  };

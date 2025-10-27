@@ -24,3 +24,30 @@ export const getWork = async (id: string): Promise<GetWorkResponse> => {
 export const getImage = (path: string) => {
   return `https://covers.openlibrary.org/b/id/${path}-L.jpg`;
 };
+
+export const getNewlyAddedWorks =
+  async (): Promise<GetNewlyAddedWorksResponse> => {
+    const response =
+      await clientApi.get<GetNewlyAddedWorksResponse["data"]>(
+        `/works/newly-added`,
+      );
+    return response;
+  };
+
+export const getMostReviewedWorks =
+  async (): Promise<GetMostReviewedWorksResponse> => {
+    const response =
+      await clientApi.get<GetMostReviewedWorksResponse["data"]>(
+        `/works/most-reviewed`,
+      );
+    return response;
+  };
+
+export const getMostShelvedWorks =
+  async (): Promise<GetMostShelvedWorksResponse> => {
+    const response =
+      await clientApi.get<GetMostShelvedWorksResponse["data"]>(
+        `/works/most-shelved`,
+      );
+    return response;
+  };
