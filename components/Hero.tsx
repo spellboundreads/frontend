@@ -1,4 +1,5 @@
 import BookCard, { BookCardProps } from "@/components/BookCard";
+import Link from "next/link";
 
 export type HeroProps = {
   headline: string;
@@ -12,7 +13,7 @@ export default function Hero({
   headline,
   description,
   ctaText = "Explore now",
-  ctaLink = "#",
+  ctaLink = "/works/",
   cards = [
     {
       title: "The Great Gatsby",
@@ -38,11 +39,11 @@ export default function Hero({
       <div className="flex flex-col justify-center p-32 gap-4">
         <h1 className="text-4xl font-bold text-black">{headline}</h1>
         <p className="text-xl text-gray-700">{description}</p>
-        <a href={ctaLink} className="w-max">
+        <Link href={ctaLink} className="w-max">
           <button className="bg-black text-white py-2 px-4 pointer">
             {ctaText}
           </button>
-        </a>
+        </Link>
       </div>
       <div className="flex justify-center items-center gap-8 p-16">
         {cards.map((card, index) => (

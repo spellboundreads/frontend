@@ -2,7 +2,7 @@ import {
   getMostReviewedWorks,
   getNewlyAddedWorks,
   getMostShelvedWorks,
-} from "@/api/work.server";
+} from "@/api/work";
 import { getImage } from "@/api/work";
 import Link from "next/link";
 import { Work } from "@/types/work";

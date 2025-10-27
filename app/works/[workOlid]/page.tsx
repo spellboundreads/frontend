@@ -18,8 +18,8 @@ export default async function Page({
 }) {
   const { workOlid } = await params;
   const work: Work = (await getWork(workOlid)).data;
-  const reviews = (await getWorksReviews(work.id, 10, 0)).data;
   const user = await getMe();
+  const reviews = user ? (await getWorksReviews(work.id, 10, 0)).data : null;
   const currentUserReview = user
     ? (await getReviewByUserWork(user.id, work.id)).data
     : null;
@@ -47,11 +47,13 @@ export default async function Page({
                 className="shadow-lg shadow-amber-50 h-98"
               />
             </div>
-            <AddToShelfDialog
-              shelves={userShelves}
-              workId={work.id}
-              shelvesWithWork={shelvesWithWork}
-            />
+            {user && (
+              <AddToShelfDialog
+                shelves={userShelves}
+                workId={work.id}
+                shelvesWithWork={shelvesWithWork}
+              />
+            )}
           </div>
         </div>
         <div className="flex-1 flex flex-col p-4 gap-2">
@@ -103,14 +105,13 @@ export default async function Page({
           </div>
 
           {/* Reviews */}
-          {work.reviews && (
-            <ReviewSection
-              workId={work.id}
-              reviews={reviews.reviews}
-              user={user || null}
-              currentUserReview={currentUserReview}
-            />
-          )}
+
+          <ReviewSection
+            workId={work.id}
+            reviews={reviews ? reviews.reviews : null}
+            user={user || null}
+            currentUserReview={currentUserReview}
+          />
         </div>
       </div>
     </div>
