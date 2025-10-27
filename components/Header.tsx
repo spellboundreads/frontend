@@ -1,4 +1,3 @@
-"use client";
 import RegisterDialog from "@/components/auth/register-dialog";
 import LoginDialog from "@/components/auth/login-dialog";
 import UserDropdown from "@/components/user/dropdown";

@@ -6,7 +6,7 @@ export default function Layout({
   return (
     <div className="flex gap-32 px-32 py-6 text-black">
       {children}
-      <aside className="flex flex-col gap-2 w-56">
+      {/*<aside className="flex flex-col gap-2 w-56">
         <div className="border-b border-gray-400 p-2 ">
           <h2 className="uppercase">Show results for</h2>
         </div>
@@ -24,7 +24,7 @@ export default function Layout({
             <a href="#">Members</a>
           </li>
         </ul>
-      </aside>
+      </aside>*/}
     </div>
   );
 }
