@@ -55,8 +55,9 @@ export async function login(state: LoginFormState, formData: FormData) {
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60,
     });
-    return redirect("/");
-    return;
+    return {
+      message: "Success",
+    };
   } catch (error) {
     if (isAxiosError(error)) {
       if (error.response) {

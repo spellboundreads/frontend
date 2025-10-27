@@ -4,6 +4,7 @@ import LoginDialog from "@/components/auth/login-dialog";
 import UserDropdown from "@/components/user/dropdown";
 import SearchBar from "./search/searchbar";
 import { User } from "@/types/user";
+import Link from "next/link";
 
 export default function Header({ user }: { user: User | null }) {
   return (
@@ -16,9 +17,12 @@ export default function Header({ user }: { user: User | null }) {
       ) : (
         <UserDropdown user={user} />
       )}
-      <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
+      <Link
+        href="/works"
+        className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold"
+      >
         works
-      </button>
+      </Link>
       <button className="rounded-md uppercase font-semibold hover:text-gray-800 hover:font-bold">
         shelves
       </button>

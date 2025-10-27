@@ -3,11 +3,20 @@ import Input from "@/components/Input";
 import { ErrorMessage, FieldError } from "@/components/form/error";
 import { login } from "@/app/actions/auth";
 import { useFormStatus } from "react-dom";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined);
+  const router = useRouter();
 
+  useEffect(() => {
+    if (state?.message && state.message === "Success") {
+      toast.success("Login successful!");
+      router.push("/works");
+    }
+  }, [state]);
   return (
     <form className="flex flex-col gap-4 " action={action}>
       {state?.message && <ErrorMessage message={state.message} />}

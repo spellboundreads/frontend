@@ -1,4 +1,5 @@
 import { User } from "@/types/user";
+import { Axios, AxiosResponse } from "axios";
 import * as z from "zod";
 
 export const UserSchema = z.object({
@@ -45,9 +46,9 @@ export const UpdateReviewResponseSchema = z.object({
 
 export type UpdateReviewResponse = z.infer<typeof UpdateReviewResponseSchema>;
 
-export const WorksReviewsResponseSchema = z.object({
-  num_found: z.number,
-  reviews: z.array(ReviewSchema),
-});
-
-export type WorksReviewsResponse = z.infer<typeof WorksReviewsResponseSchema>;
+export interface WorksReviewsResponse extends AxiosResponse {
+  data: {
+    num_found: number;
+    reviews: Review[];
+  };
+}
