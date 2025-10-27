@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { getMe } from "@/lib/auth";
 import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "spellbound",
@@ -24,8 +24,9 @@ export default async function RootLayout({
         <div className=" overflow-x-hidden relative ">
           <Header user={user || null} />
           <Toaster />
-
           <div>{children}</div>
+          <Analytics />
+          <SpeedInsights />
         </div>
       </body>
     </html>
