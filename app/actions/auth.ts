@@ -12,7 +12,7 @@ export type LoginFormState =
       errors?: {
         email?: string[];
       };
-      message?: string[];
+      message?: string;
     }
   | undefined;
 
@@ -71,7 +71,7 @@ export async function login(state: LoginFormState, formData: FormData) {
           return { message: "An error occurred while logging in" };
         }
       } else if (error.request) {
-        return { message: error.request };
+        return { message: "Network error — please try again" };
       } else {
         return { message: error.message };
       }
@@ -120,7 +120,7 @@ export async function register(state: RegisterFormState, formData: FormData) {
           return { message: error.response.data };
         }
       } else if (error.request) {
-        return { message: error.request };
+        return { message: "Network error — please try again" };
       } else {
         return { message: error.message };
       }
