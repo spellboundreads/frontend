@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 
 export const serverApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 15000,
 });
 
 serverApi.interceptors.request.use(async (config) => {
